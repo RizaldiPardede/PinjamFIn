@@ -12,17 +12,23 @@
     @Configuration
     @EnableWebSecurity
     public class JwtSecurityConfig {
+        private final JwtFilter jwtFilter;
+
+        public JwtSecurityConfig(JwtFilter jwtFilter) {
+            this.jwtFilter = jwtFilter;
+        }
 
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
             return http
                     .csrf(csrf -> csrf.disable())
                     .authorizeHttpRequests(auth -> auth
-                            .requestMatchers("/auth/login").permitAll()
+                            .requestMatchers("/auth/login").permitAll() // Buka akses login
+
                             .anyRequest().authenticated()  // Endpoint lain harus pakai token
                     )
                     .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                    .addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class)
+                    .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                     .build();
         }
     }

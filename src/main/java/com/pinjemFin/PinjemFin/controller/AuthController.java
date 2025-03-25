@@ -35,12 +35,30 @@ public class AuthController {
     }
 
     @GetMapping("/test")
-    public String testToken(@RequestHeader("Authorization") String token) {
-        // Hapus prefix "Bearer " sebelum diproses
+    public ResponseEntity<?> testToken(@RequestHeader("Authorization") String token) {
+        System.out.println("Received Token: [" + token + "]");
+
         if (token.startsWith("Bearer ")) {
             token = token.substring(7);
         }
-        String email = jwtUtil.extractEmail(token);
-        return "Email: " + email;
+
+        token = token.trim(); // Hapus spasi tambahan
+
+        System.out.println("Processed Token: [" + token + "]");
+
+        try {
+            String email = jwtUtil.extractEmail(token);
+            return ResponseEntity.ok("Email: " + email);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token: " + e.getMessage());
+        }
     }
+//    public String testToken(@RequestHeader("Authorization") String token) {
+//        // Hapus prefix "Bearer " sebelum diproses
+//        if (token.startsWith("bearer ")||token.startsWith("Bearer ")) {
+//            token = token.substring(7);
+//        }
+//        String email = jwtUtil.extractEmail(token);
+//        return "Email: " + email;
+//    }
 }
