@@ -3,6 +3,8 @@ package com.pinjemFin.PinjemFin.models;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.UUID;
+
 
 //@MappedSuperclass
 @Getter
@@ -15,8 +17,8 @@ import lombok.*;
 
 public class Users {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_user;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id_user;
 
     @Column(nullable = false)
     private String nama;

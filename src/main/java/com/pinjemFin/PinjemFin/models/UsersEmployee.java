@@ -2,6 +2,8 @@ package com.pinjemFin.PinjemFin.models;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @Entity
@@ -12,8 +14,8 @@ import lombok.*;
 public class UsersEmployee  {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id_user_employee;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id_user_employee;
 
     @OneToOne
     @JoinColumn(name = "id_user", nullable = false, unique = true) // Relasi ke Users

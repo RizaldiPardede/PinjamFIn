@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @Entity
 @NoArgsConstructor
@@ -12,8 +14,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "role_feature")
 public class Role_Feature {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_role_feature;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id_role_feature;
 
     @ManyToOne
     private Role id_role;

@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @Entity
 @NoArgsConstructor
@@ -12,8 +14,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "pengajuan_userEmployee")
 public class pengajuan_userEmployee {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id_pengajuan_userEmployee;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id_pengajuan_userEmployee;
 
     @ManyToOne
     @JoinColumn(name = "id_user_employee")

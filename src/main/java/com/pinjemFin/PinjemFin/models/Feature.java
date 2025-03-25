@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @Entity
 @AllArgsConstructor
@@ -12,8 +14,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "feature")
 public class Feature {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_feature;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id_feature;
 
     @Column(nullable = false)
     private String feature_name;

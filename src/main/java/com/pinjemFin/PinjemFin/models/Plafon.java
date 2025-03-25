@@ -3,6 +3,8 @@ package com.pinjemFin.PinjemFin.models;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.UUID;
+
 @Data
 @Entity
 @NoArgsConstructor
@@ -10,8 +12,8 @@ import lombok.*;
 @Table(name = "plafon")
 public class Plafon {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id_plafon;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id_plafon;
 
     @Column(nullable = false)
     private String jenis_plafon;
