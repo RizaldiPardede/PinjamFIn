@@ -17,11 +17,7 @@ public class AuthController {
     @Autowired
     private com.pinjemFin.PinjemFin.services.AuthService authService;
 
-//    // Login API
-//    @PostMapping("/login")
-//    public String login(@RequestParam String username, @RequestParam String password) {
-//        return authService.authenticateUser(username, password);
-//    }
+
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
@@ -33,6 +29,8 @@ public class AuthController {
 
         return ResponseEntity.ok(new JwtResponse(token));
     }
+
+
 
     @GetMapping("/test")
     public ResponseEntity<?> testToken(@RequestHeader("Authorization") String token) {
@@ -53,6 +51,8 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token: " + e.getMessage());
         }
     }
+
+
 //    public String testToken(@RequestHeader("Authorization") String token) {
 //        // Hapus prefix "Bearer " sebelum diproses
 //        if (token.startsWith("bearer ")||token.startsWith("Bearer ")) {

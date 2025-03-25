@@ -19,7 +19,7 @@ public class UsersEmployee  {
 
     @OneToOne
     @JoinColumn(name = "id_user", nullable = false, unique = true) // Relasi ke Users
-    private Users id_user;
+    private Users users;
 
     @Column(nullable = false)
     private Integer nip;
