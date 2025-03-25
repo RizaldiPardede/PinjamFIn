@@ -1,4 +1,5 @@
 package com.pinjemFin.PinjemFin.utils;
+import com.pinjemFin.PinjemFin.models.Users;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,7 +28,7 @@ public class JwtUtil {
     }
 
     // Generate Token
-    public String generateToken(String email) {
+    public String generateToken(Users user) {
         Date issuedAt = new Date();
         Date expiration = new Date(System.currentTimeMillis() + EXPIRATION_TIME);
 
@@ -36,7 +37,7 @@ public class JwtUtil {
         System.out.println("Expires At: " + expiration);
 
         return Jwts.builder()
-                .setSubject(email)
+                .setSubject(user.getId_user().toString())
                 .setIssuedAt(issuedAt)
                 .setExpiration(expiration)
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
@@ -44,7 +45,7 @@ public class JwtUtil {
     }
 
     // Mengambil email dari token
-    public String extractEmail(String token) {
+    public String extractidUser(String token) {
         try {
             // Debugging token sebelum diproses
             System.out.println("Received Token: [" + token + "]");
@@ -66,7 +67,7 @@ public class JwtUtil {
 
     // Validasi token
     public boolean validateToken(String token, String email) {
-        return email.equals(extractEmail(token)) && !isTokenExpired(token);
+        return email.equals(extractidUser(token)) && !isTokenExpired(token);
     }
 
     // Mengecek apakah token sudah kadaluarsa

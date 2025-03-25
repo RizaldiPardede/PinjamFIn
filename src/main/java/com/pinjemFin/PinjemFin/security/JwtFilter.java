@@ -41,7 +41,7 @@ public class JwtFilter extends GenericFilterBean {
         System.out.println("Raw Authorization Header: [" + authHeader + "]");
 
         // Bypass filter untuk endpoint yang tidak membutuhkan autentikasi
-        if (requestURI.startsWith("/auth/login")) {
+        if (requestURI.startsWith("/auth/login")|| requestURI.startsWith("/auth/registerAkunCustomer")) {
             chain.doFilter(request, response);
             return;
         }
@@ -58,7 +58,7 @@ public class JwtFilter extends GenericFilterBean {
         System.out.println("Processed Token jwt Filter: [" + token + "]");
 
         try {
-            String email = jwtUtil.extractEmail(token);
+            String email = jwtUtil.extractidUser(token);
             System.out.println("Extracted Email from Token: " + email);
 
             if (email == null || !jwtUtil.validateToken(token, email)) {

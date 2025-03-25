@@ -1,6 +1,10 @@
 package com.pinjemFin.PinjemFin.services;
 
+import com.pinjemFin.PinjemFin.dto.LoginRequest;
+import com.pinjemFin.PinjemFin.dto.RegisterRequest;
+import com.pinjemFin.PinjemFin.models.Role;
 import com.pinjemFin.PinjemFin.models.Users;
+import com.pinjemFin.PinjemFin.models.UsersCustomer;
 import com.pinjemFin.PinjemFin.repository.UsersRepository;
 import com.pinjemFin.PinjemFin.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +27,8 @@ public class AuthService {
     @Autowired
     private JwtUtil jwtUtil;
 
+
+
     public String authenticateUser(String email, String password) {
         logger.info("Mencoba login dengan email: {}", email);  // Cek apakah email diterima
 
@@ -34,7 +40,7 @@ public class AuthService {
             // Langsung bandingkan dengan password di database (karena belum di-hash)
             if (user.getPassword().equals(password)) {
                 logger.info("Password cocok, menghasilkan token...");
-                return jwtUtil.generateToken(email); // Kembalikan JWT Token
+                return jwtUtil.generateToken(user); // Kembalikan JWT Token
             }
             else {
                 logger.warn("Password tidak cocok untuk email: {}", email);
@@ -44,5 +50,16 @@ public class AuthService {
             logger.warn("User dengan email {} tidak ditemukan di database", email);
         }
         return null; // Jika gagal login
+    }
+
+
+    public Users registerCustomer(RegisterRequest request) {
+        Users users = new Users();
+        users.setEmail(request.getUsername());
+        users.setPassword(request.getPassword());
+        users.setNama(request.getNama());
+        users.setRole(new Role("FE4F4E2B-C388-40BF-9C57-FE266A4729B1","customer"));
+
+        return usersRepository.save(users);
     }
 }

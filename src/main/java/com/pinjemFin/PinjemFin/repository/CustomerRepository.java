@@ -21,4 +21,7 @@ public interface CustomerRepository extends JpaRepository <UsersCustomer,UUID>{
     @Transactional(readOnly = true)
     @Query("SELECT uc FROM UsersCustomer uc WHERE uc.users.id_user = :idUser")
     Optional<UsersCustomer> findByUsersIdUser(@Param("idUser") UUID idUser);
+
+
+
 }

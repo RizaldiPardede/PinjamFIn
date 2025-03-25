@@ -18,4 +18,9 @@ public class Role {
 
     @Column(nullable = false, unique = true)
     private String nama_role;
+
+    public Role(String uuid, String customer) {
+        this.id_role = UUID.fromString(uuid);
+        this.nama_role = customer;
+    }
 }

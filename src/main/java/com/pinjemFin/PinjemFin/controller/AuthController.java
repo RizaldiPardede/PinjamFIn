@@ -2,11 +2,17 @@ package com.pinjemFin.PinjemFin.controller;
 
 import com.pinjemFin.PinjemFin.dto.JwtResponse;
 import com.pinjemFin.PinjemFin.dto.LoginRequest;
+import com.pinjemFin.PinjemFin.dto.RegisterRequest;
+import com.pinjemFin.PinjemFin.models.Users;
+import com.pinjemFin.PinjemFin.models.UsersCustomer;
 import com.pinjemFin.PinjemFin.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -32,7 +38,7 @@ public class AuthController {
 
 
 
-    @GetMapping("/test")
+    @GetMapping("/getidUser")
     public ResponseEntity<?> testToken(@RequestHeader("Authorization") String token) {
         System.out.println("Received Token: [" + token + "]");
 
@@ -45,20 +51,27 @@ public class AuthController {
         System.out.println("Processed Token: [" + token + "]");
 
         try {
-            String email = jwtUtil.extractEmail(token);
-            return ResponseEntity.ok("Email: " + email);
+            String id_user = jwtUtil.extractidUser(token);
+            Map<String, String> response = new HashMap<>();
+            response.put("id_user", id_user);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token: " + e.getMessage());
         }
     }
 
+    @PostMapping("/registerAkunCustomer")
+    public ResponseEntity<?> registerakun(@RequestBody RegisterRequest RegisterRequest) {
+        authService.registerCustomer(RegisterRequest);
 
-//    public String testToken(@RequestHeader("Authorization") String token) {
-//        // Hapus prefix "Bearer " sebelum diproses
-//        if (token.startsWith("bearer ")||token.startsWith("Bearer ")) {
-//            token = token.substring(7);
-//        }
-//        String email = jwtUtil.extractEmail(token);
-//        return "Email: " + email;
-//    }
+        String token = authService.authenticateUser(RegisterRequest.getUsername(), RegisterRequest.getPassword());
+        if (token == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+        }
+
+        return ResponseEntity.ok(new JwtResponse(token));
+    }
+
+
+
 }

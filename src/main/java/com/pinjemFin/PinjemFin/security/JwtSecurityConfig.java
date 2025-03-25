@@ -24,7 +24,7 @@
                     .csrf(csrf -> csrf.disable())
                     .authorizeHttpRequests(auth -> auth
                             .requestMatchers("/auth/login").permitAll() // Buka akses login
-
+                            .requestMatchers("/auth/registerAkunCustomer").permitAll() // Buka akses register
                             .anyRequest().authenticated()  // Endpoint lain harus pakai token
                     )
                     .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
