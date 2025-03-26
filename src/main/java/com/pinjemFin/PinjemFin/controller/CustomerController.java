@@ -19,6 +19,8 @@ public class CustomerController {
 
     @Autowired
     private CustomerService CustomerService;
+    @Autowired
+    private CustomerService customerService;
 
     @PostMapping("/CekUpdateAkun")
     public ResponseEntity<?> cekUpdateAkun(@RequestBody CekUpdateAkunRequest request) {
@@ -50,6 +52,13 @@ public class CustomerController {
         Map<String, UUID> response = new HashMap<>();
         response.put("id_user_customer", idUserCustomer);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/getPlafon")
+    public ResponseEntity<UsersCustomer> getplafon(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.substring(7);
+        // Hapus "Bearer ";
+        return ResponseEntity.ok(customerService.getPlafon(token));
     }
 
 

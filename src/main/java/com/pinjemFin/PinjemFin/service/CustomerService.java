@@ -1,14 +1,18 @@
 package com.pinjemFin.PinjemFin.service;
 
+import com.pinjemFin.PinjemFin.models.Plafon;
 import com.pinjemFin.PinjemFin.models.UsersCustomer;
 import com.pinjemFin.PinjemFin.repository.CustomerRepository;
+import com.pinjemFin.PinjemFin.repository.PlafonRepository;
 import com.pinjemFin.PinjemFin.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -17,6 +21,12 @@ import java.util.UUID;
 public class CustomerService {
     @Autowired
     private CustomerRepository CustomerRepository;
+
+    @Autowired
+    private PlafonRepository plafonRepository;
+
+    @Autowired
+    PinjamanService pinjamanService;
 
 
     private final JwtUtil jwtUtil;
@@ -73,5 +83,25 @@ public class CustomerService {
         return CustomerRepository.findByUsersIdUser(idUser)
                 .map(UsersCustomer::getId_user_customer)
                 .orElseThrow(() -> new RuntimeException("User Customer not found"));
+    }
+
+    public UsersCustomer getPlafon(String token) {
+        List<Plafon> plafons = plafonRepository.findAllSorted();
+        Double jumlPinjLunas = pinjamanService.getTotalPeminjamanLunasByUser("Bearer "+token);
+        Plafon plafon = plafons.get(0);
+        for (int i = 0; i < plafons.size(); i++){
+            if(jumlPinjLunas>plafons.get(i).getJumlah_plafon()){
+                plafon = plafons.get(i);
+            }
+            else{
+                break;
+            }
+        }
+
+        UsersCustomer usersCustomer = CustomerRepository.findById(getUserCustomerIdFromToken(token)).get();
+        usersCustomer.setPlafon(plafon);
+
+
+        return CustomerRepository.save(usersCustomer);
     }
 }

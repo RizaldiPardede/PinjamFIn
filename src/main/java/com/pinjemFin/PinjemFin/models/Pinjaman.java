@@ -2,6 +2,7 @@ package com.pinjemFin.PinjemFin.models;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "pinjaman")
-
+@Builder
 public class Pinjaman {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -30,6 +31,7 @@ public class Pinjaman {
 
     @Column(nullable = false)
     private Double angsuran;
+
 
     @Column(nullable = false)
     private Double bunga;

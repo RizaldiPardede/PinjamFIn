@@ -32,4 +32,7 @@ public class Pengajuan {
 
     @Column(nullable=false)
     private Double angsuran;
+
+    @Column(nullable = false)
+    private Double bunga;
 }

@@ -5,6 +5,7 @@ import com.pinjemFin.PinjemFin.dto.LoginRequest;
 import com.pinjemFin.PinjemFin.dto.RegisterRequest;
 import com.pinjemFin.PinjemFin.models.Users;
 import com.pinjemFin.PinjemFin.models.UsersCustomer;
+import com.pinjemFin.PinjemFin.service.AuthService;
 import com.pinjemFin.PinjemFin.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,7 @@ public class AuthController {
     @Autowired
     private JwtUtil jwtUtil;
     @Autowired
-    private com.pinjemFin.PinjemFin.services.AuthService authService;
+    private AuthService authService;
 
 
 
