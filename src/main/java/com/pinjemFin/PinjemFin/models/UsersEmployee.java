@@ -25,8 +25,9 @@ public class UsersEmployee  {
     private Integer nip;
 
     @Column(nullable = false)
-    private Integer branch_id;
-
-    @Column(nullable = false)
     private String jabatan;
+
+    @ManyToOne
+    @JoinColumn(name = "id_branch")
+    private Branch branch;
 }

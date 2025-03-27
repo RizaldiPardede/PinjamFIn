@@ -3,8 +3,6 @@ package com.pinjemFin.PinjemFin.controller;
 import com.pinjemFin.PinjemFin.dto.JwtResponse;
 import com.pinjemFin.PinjemFin.dto.LoginRequest;
 import com.pinjemFin.PinjemFin.dto.RegisterRequest;
-import com.pinjemFin.PinjemFin.models.Users;
-import com.pinjemFin.PinjemFin.models.UsersCustomer;
 import com.pinjemFin.PinjemFin.service.AuthService;
 import com.pinjemFin.PinjemFin.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +61,7 @@ public class AuthController {
 
     @PostMapping("/registerAkunCustomer")
     public ResponseEntity<?> registerakun(@RequestBody RegisterRequest RegisterRequest) {
-        authService.registerCustomer(RegisterRequest);
+        authService.registerUsers(RegisterRequest);
 
         String token = authService.authenticateUser(RegisterRequest.getUsername(), RegisterRequest.getPassword());
         if (token == null) {

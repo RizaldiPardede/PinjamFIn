@@ -73,7 +73,7 @@ public class AuthService {
     }
 
 
-    public Users registerCustomer(RegisterRequest request) {
+    public Users registerUsers(RegisterRequest request) {
 
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         Users users = new Users();

@@ -53,5 +53,9 @@ public class UsersCustomer  {
     @JoinColumn(name = "id_plafon")
     private Plafon plafon;
 
+    @ManyToOne
+    @JoinColumn(name = "id_branch")
+    private Branch branch;
+
     private Double sisa_plafon;
 }
