@@ -3,9 +3,11 @@ package com.pinjemFin.PinjemFin.controller;
 import com.pinjemFin.PinjemFin.dto.CekUpdateAkunRequest;
 import com.pinjemFin.PinjemFin.models.UsersCustomer;
 import com.pinjemFin.PinjemFin.service.CustomerService;
+import com.pinjemFin.PinjemFin.service.PasswordResetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -21,6 +23,9 @@ public class CustomerController {
     private CustomerService CustomerService;
     @Autowired
     private CustomerService customerService;
+
+    @Autowired
+    private PasswordResetService passwordResetService;
 
     @PostMapping("/CekUpdateAkun")
     public ResponseEntity<?> cekUpdateAkun(@RequestBody CekUpdateAkunRequest request) {
@@ -54,11 +59,31 @@ public class CustomerController {
         return ResponseEntity.ok(response);
     }
 
+    @PreAuthorize("@permissionEvaluator.hasAccess(authentication, 'feature_getplafon')")
     @GetMapping("/getPlafon")
     public ResponseEntity<UsersCustomer> getplafon(@RequestHeader("Authorization") String authHeader) {
         String token = authHeader.substring(7);
         // Hapus "Bearer ";
         return ResponseEntity.ok(customerService.getPlafon(token));
+    }
+
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<Map<String, String>> forgotPassword(@RequestBody Map<String, String> request) {
+        return passwordResetService.handleForgotPassword(request.get("email"));
+    }
+
+
+    @GetMapping("/reset-password")
+    public ResponseEntity<Map<String, String>> showResetForm(@RequestParam String token) {
+        return passwordResetService.handleShowResetForm(token);
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<Map<String, String>> resetPassword(
+            @RequestBody Map<String, String> request
+    ) {
+        return passwordResetService.handleResetPassword(request.get("token"), request.get("new_password"));
     }
 
 

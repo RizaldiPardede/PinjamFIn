@@ -104,4 +104,8 @@ public class CustomerService {
 
         return CustomerRepository.save(usersCustomer);
     }
+
+    public UsersCustomer getUserCustomer(UUID id){
+        return CustomerRepository.findById(id).get();
+    }
 }

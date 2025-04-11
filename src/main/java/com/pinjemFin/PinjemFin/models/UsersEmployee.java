@@ -1,7 +1,9 @@
 package com.pinjemFin.PinjemFin.models;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -30,4 +32,10 @@ public class UsersEmployee  {
     @ManyToOne
     @JoinColumn(name = "id_branch")
     private Branch branch;
+
+    @OneToMany(mappedBy = "id_user_employee", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
+    private List<pengajuan_userEmployee> pengajuanUserEmployees;
+
+
 }

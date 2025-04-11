@@ -44,7 +44,7 @@ public class JwtUtil {
                 .compact();
     }
 
-    // Mengambil email dari token
+    // Mengambil id dari token
     public String extractidUser(String token) {
         try {
             // Debugging token sebelum diproses

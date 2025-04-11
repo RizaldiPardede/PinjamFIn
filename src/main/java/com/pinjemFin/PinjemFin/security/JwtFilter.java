@@ -41,7 +41,12 @@ public class JwtFilter extends GenericFilterBean {
         System.out.println("Raw Authorization Header: [" + authHeader + "]");
 
         // Bypass filter untuk endpoint yang tidak membutuhkan autentikasi
-        if (requestURI.startsWith("/auth/login")|| requestURI.startsWith("/auth/registerAkunCustomer")) {
+        if (requestURI.startsWith("/auth/login")
+                || requestURI.startsWith("/auth/registerAkunCustomer")
+                ||requestURI.startsWith("/customer/forgot-password")
+                ||requestURI.startsWith("/customer/reset-password")
+                ||requestURI.startsWith("/reset-password")) {
+
             chain.doFilter(request, response);
             return;
         }
@@ -58,22 +63,22 @@ public class JwtFilter extends GenericFilterBean {
         System.out.println("Processed Token jwt Filter: [" + token + "]");
 
         try {
-            String email = jwtUtil.extractidUser(token);
-            System.out.println("Extracted Email from Token: " + email);
+            String id_Users = jwtUtil.extractidUser(token);
+            System.out.println("Extracted Email from Token: " + id_Users);
 
-            if (email == null || !jwtUtil.validateToken(token, email)) {
+            if (id_Users == null || !jwtUtil.validateToken(token, id_Users)) {
                 System.out.println("Token validation failed.");
                 httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
                 return;
             }
 
             // Set user ke SecurityContext agar tidak mendapat error 403
-            UserDetails userDetails = new User(email, "", Collections.emptyList());
+            UserDetails userDetails = new User(id_Users, "", Collections.emptyList());
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            System.out.println("User authenticated successfully: " + email);
+            System.out.println("User authenticated successfully: " + id_Users);
         } catch (Exception e) {
             System.out.println("Error processing token: " + e.getMessage());
             httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token format");
