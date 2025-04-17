@@ -2,8 +2,11 @@ package com.pinjemFin.PinjemFin.controller;
 
 import com.pinjemFin.PinjemFin.dto.JwtResponse;
 import com.pinjemFin.PinjemFin.dto.LoginRequest;
+import com.pinjemFin.PinjemFin.dto.LoginRequestEmployee;
 import com.pinjemFin.PinjemFin.dto.RegisterRequest;
+import com.pinjemFin.PinjemFin.models.Users;
 import com.pinjemFin.PinjemFin.service.AuthService;
+import com.pinjemFin.PinjemFin.service.EmployeeService;
 import com.pinjemFin.PinjemFin.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +24,8 @@ public class AuthController {
     private JwtUtil jwtUtil;
     @Autowired
     private AuthService authService;
+    @Autowired
+    private EmployeeService employeeService;
 
 
 
@@ -30,6 +35,19 @@ public class AuthController {
 
         if (token == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+        }
+
+        return ResponseEntity.ok(new JwtResponse(token));
+    }
+
+    @PostMapping("/loginEmployee")
+    public ResponseEntity<?> login(@RequestBody LoginRequestEmployee loginRequest) {
+        Users users = employeeService.getUsersEmployee(loginRequest.getNip())
+                .orElseThrow(() -> new RuntimeException("Invalid NIP or password")).getUsers();
+
+        String token = authService.authenticateUser(users.getEmail(), loginRequest.getPassword());
+        if (token == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid NIP or password");
         }
 
         return ResponseEntity.ok(new JwtResponse(token));

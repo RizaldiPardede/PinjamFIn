@@ -14,6 +14,8 @@ import java.util.UUID;
 
 @Repository
 public interface EmployeeRepository extends JpaRepository<UsersEmployee, UUID> {
+    Optional<UsersEmployee> findByNip(Integer nip);
+
 
     @Transactional(readOnly = true)
     @Query("SELECT ue FROM UsersEmployee ue WHERE ue.users.id_user = :idUser")

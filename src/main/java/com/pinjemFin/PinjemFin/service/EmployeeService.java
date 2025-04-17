@@ -56,8 +56,11 @@ public class EmployeeService {
         return employeeRepository.save(usersEmployee);
     }
 
+    public Optional<UsersEmployee> getUsersEmployee(Integer nip) {
 
-    public UUID getUserCustomerIdFromToken(String token) {
+        return employeeRepository.findByNip(nip);
+    }
+    public UUID getUserEmployeeIdFromToken(String token) {
         // Ambil id_user langsung dari token JWT
         UUID idUser = UUID.fromString(jwtUtil.extractidUser(token));
 
@@ -67,8 +70,14 @@ public class EmployeeService {
                 .orElseThrow(() -> new RuntimeException("User Employee not found"));
     }
 
+    public UsersEmployee getEmployeeProfileFromToken(String token) {
+        UUID UsersId = getUserEmployeeIdFromToken(token);
+        return employeeRepository.findById(UsersId)
+                .orElseThrow(() -> new RuntimeException("Emoloyee not found"));
+    }
+
     public pengajuan_userEmployee recomendMarketing(String token, UUID pengajuanId) {
-        UUID marketingid = getUserCustomerIdFromToken(token);
+        UUID marketingid = getUserEmployeeIdFromToken(token);
         UsersEmployee marketing = employeeRepository.findById(marketingid)
                 .orElseThrow(() -> new RuntimeException("marketingid not found"));
         UsersEmployee branchmarketing = employeeRepository.findBranchManager(marketing.getBranch().getId_branch()
@@ -89,7 +98,7 @@ public class EmployeeService {
     }
 
     public pengajuan_userEmployee approveBranchManager(String token, UUID pengajuanId) {
-        UUID branchmanagerid = getUserCustomerIdFromToken(token);
+        UUID branchmanagerid = getUserEmployeeIdFromToken(token);
         UsersEmployee branchmanager = employeeRepository.findById(branchmanagerid)
                 .orElseThrow(() -> new RuntimeException("branchmanager not found"));
         UsersEmployee backoffice = employeeRepository.findBackOffice(branchmanager.getBranch().getId_branch()

@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 
@@ -40,11 +41,37 @@ public class EmployeeController {
     }
 
     @GetMapping("/getPengajuanEmployee")
-    public pengajuan_userEmployee getPengajuan(@RequestHeader("Authorization") String authHeader) {
+    public List<pengajuan_userEmployee> getPengajuan(@RequestHeader("Authorization") String authHeader) {
         String token = authHeader.substring(7); // Hapus "Bearer "
 
         UUID userId = UUID.fromString(jwtUtil.extractidUser(token));
         return pengajuanEmployeeService.getpengajuan_userEmployee(userId);
+
+    }
+
+    @GetMapping("/getPengajuanEmployeeMarketing")
+    public List<pengajuan_userEmployee> getPengajuanEmployeeMarketing(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.substring(7); // Hapus "Bearer "
+
+        UUID userId = UUID.fromString(jwtUtil.extractidUser(token));
+        return pengajuanEmployeeService.getpengajuanEmployeeMarketing(userId);
+
+    }
+    @GetMapping("/getPengajuanEmployeeBranchmanager")
+    public List<pengajuan_userEmployee> getPengajuanEmployeeBranchmanager(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.substring(7); // Hapus "Bearer "
+
+        UUID userId = UUID.fromString(jwtUtil.extractidUser(token));
+        return pengajuanEmployeeService.getpengajuanEmployeeBranchmanager(userId);
+
+    }
+
+    @GetMapping("/getPengajuanEmployeeBackoffice")
+    public List<pengajuan_userEmployee> getPengajuanEmployeeBackoffice(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.substring(7); // Hapus "Bearer "
+
+        UUID userId = UUID.fromString(jwtUtil.extractidUser(token));
+        return pengajuanEmployeeService.getpengajuanEmployeeBackoffice(userId);
 
     }
 
@@ -55,8 +82,8 @@ public class EmployeeController {
         return employeeService.recomendMarketing(token,pengajuanRequest.getId_pengajuan());
     }
 
-    @PostMapping("/approveMarketing")
-    public pengajuan_userEmployee approveMarketing(@RequestHeader("Authorization") String authHeader
+    @PostMapping("/approveBranchManager")
+    public pengajuan_userEmployee approveBranchManager(@RequestHeader("Authorization") String authHeader
             ,@RequestBody PengajuanRequest pengajuanRequest) {
         String token = authHeader.substring(7);
         return employeeService.approveBranchManager(token,pengajuanRequest.getId_pengajuan());
@@ -66,6 +93,12 @@ public class EmployeeController {
     public Pengajuan disbursement(@RequestBody PengajuanRequest pengajuanRequest) {
         return employeeService.disburseBackOffice(pengajuanRequest.getId_pengajuan());
     }
+
+    @GetMapping ("/getProfileMarketing")
+    public UsersEmployee getProfileMarketing(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.substring(7);
+        return employeeService.getEmployeeProfileFromToken(token);
+    }   
 
 
 }

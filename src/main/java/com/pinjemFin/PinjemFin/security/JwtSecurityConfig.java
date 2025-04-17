@@ -24,12 +24,14 @@
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
             return http
                     .csrf(csrf -> csrf.disable())
+                    .cors(cors -> cors.configurationSource(WebConfig.corsConfigurationSource()))
                     .authorizeHttpRequests(auth -> auth
                             .requestMatchers("/auth/login").permitAll() // Buka akses login
                             .requestMatchers("/auth/registerAkunCustomer").permitAll() // Buka akses register
                             .requestMatchers("/customer/forgot-password").permitAll()
                             .requestMatchers("/customer/reset-password").permitAll()
                             .requestMatchers("/customer/reset-password/**").permitAll()
+                            .requestMatchers("/auth/loginEmployee").permitAll() // Buka akses login
                             .anyRequest().authenticated()  // Endpoint lain harus pakai token
                     )
                     .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
