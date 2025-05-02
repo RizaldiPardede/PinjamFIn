@@ -68,23 +68,7 @@ public class CustomerController {
     }
 
 
-    @PostMapping("/forgot-password")
-    public ResponseEntity<Map<String, String>> forgotPassword(@RequestBody Map<String, String> request) {
-        return passwordResetService.handleForgotPassword(request.get("email"));
-    }
 
-
-    @GetMapping("/reset-password")
-    public ResponseEntity<Map<String, String>> showResetForm(@RequestParam String token) {
-        return passwordResetService.handleShowResetForm(token);
-    }
-
-    @PostMapping("/reset-password")
-    public ResponseEntity<Map<String, String>> resetPassword(
-            @RequestBody Map<String, String> request
-    ) {
-        return passwordResetService.handleResetPassword(request.get("token"), request.get("new_password"));
-    }
 
 
 }

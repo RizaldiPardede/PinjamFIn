@@ -31,7 +31,7 @@ public class UsersCustomer  {
     @Column(nullable = false)
     private String alamat;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String nik;
 
     @Column(nullable = false)

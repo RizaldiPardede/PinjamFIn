@@ -1,4 +1,9 @@
 package com.pinjemFin.PinjemFin.dto;
 
-public class UpdatePasswordEmployeeRequest {
+import lombok.Data;
+
+@Data
+public class UpdatePasswordEmployeeRequest{
+    private Integer nip;
+    private String newPassword;
 }

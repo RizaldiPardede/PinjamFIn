@@ -79,6 +79,16 @@
 			<scope>test</scope>
 		</dependency>
 
+<!--		websocket set up-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-websocket</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-messaging</artifactId>
+		</dependency>
 
 		<!--untuk set up jwt-->
 		<dependency>

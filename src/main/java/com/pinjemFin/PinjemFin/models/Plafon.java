@@ -20,4 +20,7 @@ public class Plafon {
 
     @Column(nullable = false)
     private Double jumlah_plafon;
+
+    @Column(nullable = false)
+    private Double bunga;
 }

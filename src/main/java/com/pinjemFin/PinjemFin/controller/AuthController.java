@@ -1,12 +1,8 @@
 package com.pinjemFin.PinjemFin.controller;
 
-import com.pinjemFin.PinjemFin.dto.JwtResponse;
-import com.pinjemFin.PinjemFin.dto.LoginRequest;
-import com.pinjemFin.PinjemFin.dto.LoginRequestEmployee;
-import com.pinjemFin.PinjemFin.dto.RegisterRequest;
+import com.pinjemFin.PinjemFin.dto.*;
 import com.pinjemFin.PinjemFin.models.Users;
-import com.pinjemFin.PinjemFin.service.AuthService;
-import com.pinjemFin.PinjemFin.service.EmployeeService;
+import com.pinjemFin.PinjemFin.service.*;
 import com.pinjemFin.PinjemFin.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,7 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/auth")
@@ -26,6 +24,12 @@ public class AuthController {
     private AuthService authService;
     @Autowired
     private EmployeeService employeeService;
+
+    @Autowired
+    private PasswordResetService passwordResetService;
+
+    @Autowired
+    private RoleFeatureService roleFeatureService;
 
 
 
@@ -50,7 +54,13 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid NIP or password");
         }
 
-        return ResponseEntity.ok(new JwtResponse(token));
+        // Ambil fitur dari role yang dimiliki user
+        List<String> features = roleFeatureService.getFeatureNamesByRole(users.getRole().getId_role());
+        LoginResponse loginResponse = new LoginResponse();
+        loginResponse.setToken(token);
+        loginResponse.setFeatures(features);
+
+        return ResponseEntity.ok(loginResponse);
     }
 
 
@@ -87,6 +97,24 @@ public class AuthController {
         }
 
         return ResponseEntity.ok(new JwtResponse(token));
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<Map<String, String>> forgotPassword(@RequestBody Map<String, String> request) {
+        return passwordResetService.handleForgotPassword(request.get("email"));
+    }
+
+
+    @GetMapping("/reset-password")
+    public ResponseEntity<Map<String, String>> showResetForm(@RequestParam String token) {
+        return passwordResetService.handleShowResetForm(token);
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<Map<String, String>> resetPassword(
+            @RequestBody Map<String, String> request
+    ) {
+        return passwordResetService.handleResetPassword(request.get("token"), request.get("new_password"));
     }
 
 

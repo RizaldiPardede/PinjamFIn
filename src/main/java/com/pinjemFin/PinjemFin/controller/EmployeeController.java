@@ -1,7 +1,6 @@
 package com.pinjemFin.PinjemFin.controller;
 
-import com.pinjemFin.PinjemFin.dto.PengajuanRequest;
-import com.pinjemFin.PinjemFin.dto.UserEmployeUsersRequest;
+import com.pinjemFin.PinjemFin.dto.*;
 import com.pinjemFin.PinjemFin.models.Pengajuan;
 import com.pinjemFin.PinjemFin.models.UsersEmployee;
 import com.pinjemFin.PinjemFin.models.pengajuan_userEmployee;
@@ -38,6 +37,12 @@ public class EmployeeController {
 
         UsersEmployee savedEmployee = employeeService.addEmployee(usersEmployee);
         return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
+    }
+    @GetMapping("/getallEmployee")
+    public List<UsersEmployee> getallEmployee() {
+        return employeeService.getallEmployees();
+
+
     }
 
     @GetMapping("/getPengajuanEmployee")
@@ -98,7 +103,47 @@ public class EmployeeController {
     public UsersEmployee getProfileMarketing(@RequestHeader("Authorization") String authHeader) {
         String token = authHeader.substring(7);
         return employeeService.getEmployeeProfileFromToken(token);
-    }   
+    }
+    @PostMapping("/getNipFromtoken")
+    public NipnameRequest getNipFromtoken(@RequestHeader("Authorization") String authHeader) {
+        String token =  authHeader.substring(7);
+        System.out.println("Token diterima dari front end: " + token); // Debugging
+        UsersEmployee usersEmployee= employeeService.getEmployeeProfileFromToken(token);
+
+        NipnameRequest nipnameRequest = new NipnameRequest();
+        nipnameRequest.setNama(usersEmployee.getUsers().getNama());
+        nipnameRequest.setNip(usersEmployee.getNip());
+        return nipnameRequest;
+    }
+
+    @GetMapping("/getAllEmoloyeeNipName")
+    public List<NipnameRequest> getAllEmoloyeeNipName(@RequestHeader("Authorization") String authHeader) {
+        String token =  authHeader.substring(7);
+        return employeeService.getAllEmployeeNipName(token);
+    }
+
+    @PutMapping("/updatePassword")
+    public ResponseEntity<?> updatePassword(@RequestBody UpdatePasswordEmployeeRequest request) {
+        try {
+            employeeService.updatePasswordEmployee(request);
+            ResponseMessage responseMessage = new ResponseMessage();
+            responseMessage.setMessage("Successfully updated password");
+            return ResponseEntity.ok(responseMessage);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/updateProfile")
+    public ResponseEntity<?> updateProfile(@RequestBody UpdateProfileEmployeeRequest request) {
+        try {
+            UsersEmployee updated = employeeService.updateProfileEmployee(request);
+            return ResponseEntity.ok(updated);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
 
 
 }

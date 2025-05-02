@@ -51,7 +51,7 @@ public class PasswordResetService {
         }
         passwordResetTokenRepository.save(resetToken);
 
-        String resetLink = "http://localhost:8080/customer/reset-password?token=" + token;
+        String resetLink = "http://localhost:4200/resetpassword/" + token;
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(users.getEmail());
@@ -61,8 +61,7 @@ public class PasswordResetService {
         mailSender.send(message);
     }
 
-    public
-    ResponseEntity <Map<String, String>>handleForgotPassword(String email) {
+    public ResponseEntity <Map<String, String>>handleForgotPassword(String email) {
         Users users = usersRepository.findByEmail(email).get();
         if (users == null) {
             Map<String, String> response = new HashMap<>();

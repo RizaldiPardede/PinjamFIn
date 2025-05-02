@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,7 +82,10 @@ public class AuthService {
         users.setEmail(request.getUsername());
         users.setPassword(passwordEncoder.encode(request.getPassword())); //hasing password
         users.setNama(request.getNama());
-        users.setRole(new Role("FE4F4E2B-C388-40BF-9C57-FE266A4729B1","customer"));
+        Role role = new Role();
+        role.setId_role(UUID.fromString("FE4F4E2B-C388-40BF-9C57-FE266A4729B1"));
+        role.setNama_role("customer");
+        users.setRole(role);
 
         return usersRepository.save(users);
     }

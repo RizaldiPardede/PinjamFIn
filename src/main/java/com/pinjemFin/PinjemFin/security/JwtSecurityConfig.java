@@ -2,6 +2,7 @@
 
     import org.springframework.context.annotation.Bean;
     import org.springframework.context.annotation.Configuration;
+    import org.springframework.http.HttpMethod;
     import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
     import org.springframework.security.config.annotation.web.builders.HttpSecurity;
     import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -31,7 +32,8 @@
                             .requestMatchers("/customer/forgot-password").permitAll()
                             .requestMatchers("/customer/reset-password").permitAll()
                             .requestMatchers("/customer/reset-password/**").permitAll()
-                            .requestMatchers("/auth/loginEmployee").permitAll() // Buka akses login
+                            .requestMatchers("/auth/loginEmployee").permitAll()
+                            .requestMatchers("/ws/**").permitAll() // Mengizinkan akses ke WebSocket endpoint)// Buka akses login
                             .anyRequest().authenticated()  // Endpoint lain harus pakai token
                     )
                     .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -80,4 +80,9 @@ public class JwtUtil {
                 .getExpiration()
                 .before(new Date());
     }
+
+    public String extractEmailFromToken(String token) {
+        // Menggunakan id_user untuk ekstrak email jika di set dalam subject
+        return extractidUser(token); // Jika token subject berisi email
+    }
 }

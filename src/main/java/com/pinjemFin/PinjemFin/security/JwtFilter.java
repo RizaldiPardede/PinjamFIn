@@ -46,7 +46,9 @@ public class JwtFilter extends GenericFilterBean {
                 ||requestURI.startsWith("/customer/forgot-password")
                 ||requestURI.startsWith("/customer/reset-password")
                 ||requestURI.startsWith("/reset-password")
-                ||requestURI.startsWith("/auth/loginEmployee")) {
+                ||requestURI.startsWith("/auth/loginEmployee")
+                ||requestURI.startsWith("/ws")
+        ) {
 
             chain.doFilter(request, response);
             return;

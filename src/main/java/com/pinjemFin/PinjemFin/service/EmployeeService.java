@@ -1,5 +1,8 @@
 package com.pinjemFin.PinjemFin.service;
 
+import com.pinjemFin.PinjemFin.dto.NipnameRequest;
+import com.pinjemFin.PinjemFin.dto.UpdatePasswordEmployeeRequest;
+import com.pinjemFin.PinjemFin.dto.UpdateProfileEmployeeRequest;
 import com.pinjemFin.PinjemFin.dto.UserEmployeUsersRequest;
 import com.pinjemFin.PinjemFin.models.*;
 import com.pinjemFin.PinjemFin.repository.*;
@@ -7,7 +10,10 @@ import com.pinjemFin.PinjemFin.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -31,6 +37,8 @@ public class EmployeeService {
     @Autowired
     PengajuanEmployeeRepository pengajuanEmployeeRepository;
 
+    @Autowired
+    EmailService emailService;
 
     private final JwtUtil jwtUtil;
 
@@ -40,21 +48,77 @@ public class EmployeeService {
 
     public UsersEmployee addEmployee(UserEmployeUsersRequest usersEmployeeUsersRequest) {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+        // Generate raw password (8 karakter acak)
+        String rawPassword = UUID.randomUUID().toString().substring(0, 8);
+
+        // Set data user
         Users users = new Users();
         users.setEmail(usersEmployeeUsersRequest.getUsers().getEmail());
-        users.setPassword(passwordEncoder.encode(usersEmployeeUsersRequest.getUsers().getPassword())); //hasing password
+        users.setPassword(passwordEncoder.encode(rawPassword)); // Simpan hashed password
         users.setNama(usersEmployeeUsersRequest.getUsers().getNama());
         users.setRole(roleRepository.findById(usersEmployeeUsersRequest.getUsers().getId_role()).get());
-        Users usersaved =usersRepository.save(users);
+        Users usersaved = usersRepository.save(users);
 
+        // Set data employee
         UsersEmployee usersEmployee = new UsersEmployee();
         usersEmployee.setNip(usersEmployeeUsersRequest.getNip());
         usersEmployee.setJabatan(usersEmployeeUsersRequest.getJabatan());
         usersEmployee.setUsers(usersaved);
         usersEmployee.setBranch(branchRepository.findById(usersEmployeeUsersRequest.getIdbranch()).get());
 
-        return employeeRepository.save(usersEmployee);
+        UsersEmployee savedEmployee = employeeRepository.save(usersEmployee);
+
+        // Kirim email setelah akun berhasil dibuat
+        String subject = "Pembuatan Akun Berhasil";
+        String body = "Pembuatan akun berhasil.\n\nBerikut data akun Anda:\n" +
+                "NIP: " + savedEmployee.getNip() + "\n" +
+                "Password: " + rawPassword + "\n\n" +
+                "Segera ganti password Anda setelah login.";
+
+        emailService.sendEmail(users.getEmail(), subject, body);
+
+        return savedEmployee;
     }
+    @Transactional
+    public void updatePasswordEmployee(UpdatePasswordEmployeeRequest request) {
+        UsersEmployee employee = employeeRepository.findByNip(request.getNip())
+                .orElseThrow(() -> new RuntimeException("NIP tidak ditemukan"));
+
+        Users user = employee.getUsers();
+
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        user.setPassword(encoder.encode(request.getNewPassword()));
+
+        usersRepository.save(user);
+    }
+
+    @Transactional
+    public UsersEmployee updateProfileEmployee(UpdateProfileEmployeeRequest request) {
+        UsersEmployee employee = employeeRepository.findByNip(request.getNip())
+                .orElseThrow(() -> new RuntimeException("Employee tidak ditemukan"));
+
+        Users user = employee.getUsers();
+
+        user.setNama(request.getNama());
+        user.setEmail(request.getEmail());
+        user.setRole(roleRepository.findById(request.getId_role())
+                .orElseThrow(() -> new RuntimeException("Role tidak ditemukan")));
+        usersRepository.save(user);
+
+        employee.setJabatan(request.getJabatan());
+        employee.setBranch(branchRepository.findById(request.getId_branch())
+                .orElseThrow(() -> new RuntimeException("Branch tidak ditemukan")));
+
+        return employeeRepository.save(employee);
+    }
+
+
+    public List<UsersEmployee> getallEmployees() {
+        return employeeRepository.findAll();
+    }
+
+
 
     public Optional<UsersEmployee> getUsersEmployee(Integer nip) {
 
@@ -75,6 +139,26 @@ public class EmployeeService {
         return employeeRepository.findById(UsersId)
                 .orElseThrow(() -> new RuntimeException("Emoloyee not found"));
     }
+
+    public List<NipnameRequest> getAllEmployeeNipName(String token) {
+
+        List<UsersEmployee> usersEmployees  = employeeRepository.findAll();
+        List<NipnameRequest> nipnameRequests = new ArrayList<>();
+
+        for (UsersEmployee usersEmployee : usersEmployees) {
+            NipnameRequest request = new NipnameRequest();
+            request.setNama(usersEmployee.getUsers().getNama());
+            request.setNip(usersEmployee.getNip());
+
+            nipnameRequests.add(request); // tambahkan ke list
+        }
+
+        return nipnameRequests;
+    }
+
+
+
+
 
     public pengajuan_userEmployee recomendMarketing(String token, UUID pengajuanId) {
         UUID marketingid = getUserEmployeeIdFromToken(token);
