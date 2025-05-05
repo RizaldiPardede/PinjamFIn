@@ -18,10 +18,14 @@ public class StartupConfig {
             List<String> roles = List.of("back office", "branch manager", "customer", "marketing", "super admin");
 
             for (String roleName : roles) {
-                if (roleRepository.findByNamaRole(roleName).getNama_role().isEmpty()) {
+                Role existingRole = roleRepository.findByNamaRole(roleName);
+                if (existingRole == null) {
                     Role role = new Role();
                     role.setNama_role(roleName);
                     roleRepository.save(role);
+                    System.out.println("Inserted role: " + roleName);
+                } else {
+                    System.out.println("Role already exists: " + roleName);
                 }
             }
         };
