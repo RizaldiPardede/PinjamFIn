@@ -117,6 +117,9 @@ public class AuthController {
         return passwordResetService.handleResetPassword(request.get("token"), request.get("new_password"));
     }
 
-
+    @GetMapping("/test")
+    public ResponseEntity<String> showResetForm() {
+        return ResponseEntity.status(HttpStatus.OK).body("test");
+    }
 
 }

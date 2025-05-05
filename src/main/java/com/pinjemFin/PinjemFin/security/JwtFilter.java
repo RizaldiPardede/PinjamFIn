@@ -41,13 +41,13 @@ public class JwtFilter extends GenericFilterBean {
         System.out.println("Raw Authorization Header: [" + authHeader + "]");
 
         // Bypass filter untuk endpoint yang tidak membutuhkan autentikasi
-        if (requestURI.startsWith("/auth/login")
-                || requestURI.startsWith("/auth/registerAkunCustomer")
-                ||requestURI.startsWith("/customer/forgot-password")
-                ||requestURI.startsWith("/customer/reset-password")
-                ||requestURI.startsWith("/reset-password")
-                ||requestURI.startsWith("/auth/loginEmployee")
-                ||requestURI.startsWith("/ws")
+        if (requestURI.startsWith("/api/auth/login")
+                || requestURI.startsWith("/api/auth/registerAkunCustomer")
+                ||requestURI.startsWith("/api/customer/forgot-password")
+                ||requestURI.startsWith("/api/customer/reset-password")
+                ||requestURI.startsWith("/api/reset-password")
+                ||requestURI.startsWith("/api/auth/loginEmployee")
+                ||requestURI.startsWith("/api/ws")
         ) {
 
             chain.doFilter(request, response);
