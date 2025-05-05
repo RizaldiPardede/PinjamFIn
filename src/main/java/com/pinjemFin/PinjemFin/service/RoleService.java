@@ -55,6 +55,10 @@ public class RoleService {
 
     }
 
+    public Role getRoleWithNameRole(String nama_role) {
+        return roleRepository.findByNamaRole(nama_role);
+    }
+
 
 
 }

@@ -4,6 +4,7 @@ package com.pinjemFin.PinjemFin.service;
 import com.pinjemFin.PinjemFin.dto.RegisterRequest;
 import com.pinjemFin.PinjemFin.models.Role;
 import com.pinjemFin.PinjemFin.models.Users;
+import com.pinjemFin.PinjemFin.repository.RoleRepository;
 import com.pinjemFin.PinjemFin.repository.UsersRepository;
 import com.pinjemFin.PinjemFin.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,8 @@ public class AuthService {
 
     @Autowired
     private UsersRepository usersRepository;
-
+    @Autowired
+    private RoleRepository roleRepository;
     @Autowired
     private JwtUtil jwtUtil;
 
@@ -82,8 +84,9 @@ public class AuthService {
         users.setEmail(request.getUsername());
         users.setPassword(passwordEncoder.encode(request.getPassword())); //hasing password
         users.setNama(request.getNama());
+
         Role role = new Role();
-        role.setId_role(UUID.fromString("FE4F4E2B-C388-40BF-9C57-FE266A4729B1"));
+        role.setId_role(roleRepository.findByNamaRole("customer").getId_role());
         role.setNama_role("customer");
         users.setRole(role);
 

@@ -40,6 +40,9 @@ public class EmployeeService {
     @Autowired
     EmailService emailService;
 
+    @Autowired
+    RoleService roleService;
+
     private final JwtUtil jwtUtil;
 
     public EmployeeService(JwtUtil jwtUtil) {
@@ -165,7 +168,7 @@ public class EmployeeService {
         UsersEmployee marketing = employeeRepository.findById(marketingid)
                 .orElseThrow(() -> new RuntimeException("marketingid not found"));
         UsersEmployee branchmarketing = employeeRepository.findBranchManager(marketing.getBranch().getId_branch()
-                        ,UUID.fromString("55861664-637A-402E-8BDF-F699E0E17889"))
+                        ,roleService.getRoleWithNameRole("branch manager").getId_role())
                 .orElseThrow(() -> new RuntimeException("branchmarketingid not found"));
 
 
@@ -186,7 +189,7 @@ public class EmployeeService {
         UsersEmployee branchmanager = employeeRepository.findById(branchmanagerid)
                 .orElseThrow(() -> new RuntimeException("branchmanager not found"));
         UsersEmployee backoffice = employeeRepository.findBackOffice(branchmanager.getBranch().getId_branch()
-                ,UUID.fromString("613C6352-5168-407C-9C75-5759472E2CD7"))
+                ,roleService.getRoleWithNameRole("back office").getId_role())
                 .orElseThrow(() -> new RuntimeException("backoffice not found"));
 
         Optional<Pengajuan> pengajuan = pengajuanRepository.findById(pengajuanId);
