@@ -42,5 +42,8 @@ public class Pinjaman {
     @Column(nullable = false)
     private Double sisa_pokok_hutang;
 
+    @Column(nullable = true)
+    private Double total_payment;
+
 
 }

@@ -1,5 +1,6 @@
 package com.pinjemFin.PinjemFin.dto;
 
+import jakarta.persistence.Column;
 import lombok.Data;
 
 import java.util.UUID;
@@ -11,5 +12,6 @@ public class PengajuanToPeminjamanRequest {
     private Double angsuran;
     private Integer tenor;
     private Double bunga;
+    private Double total_payment;
 
 }

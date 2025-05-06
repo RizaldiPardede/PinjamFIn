@@ -77,6 +77,7 @@ public class PinjamanService {
                 .tenor(pengajuan.getTenor())
                 .sisa_tenor(pengajuan.getTenor())
                 .sisa_pokok_hutang(pengajuan.getAmount())
+                .total_payment(pengajuan.getTotal_payment())
                 .id_user_customer(usersCustomer)
                 .build();
         return pinjamanRepository.save(pinjaman);
@@ -88,6 +89,8 @@ public class PinjamanService {
 
         return pinjamanRepository.getTotalPeminjamanLunasByUser(idUserCustomer);
     }
+
+
 
 
 

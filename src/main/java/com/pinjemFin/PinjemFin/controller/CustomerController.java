@@ -1,9 +1,13 @@
 package com.pinjemFin.PinjemFin.controller;
 
 import com.pinjemFin.PinjemFin.dto.CekUpdateAkunRequest;
+import com.pinjemFin.PinjemFin.dto.DetailCustomerRequest;
+import com.pinjemFin.PinjemFin.dto.PengajuanCustomerRequest;
+import com.pinjemFin.PinjemFin.dto.SimulasiRequest;
 import com.pinjemFin.PinjemFin.models.UsersCustomer;
 import com.pinjemFin.PinjemFin.service.CustomerService;
 import com.pinjemFin.PinjemFin.service.PasswordResetService;
+import com.pinjemFin.PinjemFin.service.PengajuanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +25,9 @@ public class CustomerController {
 
     @Autowired
     private CustomerService CustomerService;
+
     @Autowired
-    private CustomerService customerService;
+    private PengajuanService pengajuanService;
 
     @Autowired
     private PasswordResetService passwordResetService;
@@ -34,8 +39,10 @@ public class CustomerController {
     }
 
     @PostMapping("/AddDetailAkun")
-    public ResponseEntity<UsersCustomer> createCustomer(@RequestBody UsersCustomer usersCustomer) {
-        UsersCustomer savedCustomer = CustomerService.addCustomer(usersCustomer);
+    public ResponseEntity<UsersCustomer> createCustomer(@RequestBody DetailCustomerRequest detailCustomerRequest
+            ,@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.substring(7); // Hapus "Bearer "
+        UsersCustomer savedCustomer = CustomerService.addCustomer(detailCustomerRequest,token);
         return new ResponseEntity<>(savedCustomer, HttpStatus.CREATED);
     }
 
@@ -64,9 +71,14 @@ public class CustomerController {
     public ResponseEntity<UsersCustomer> getplafon(@RequestHeader("Authorization") String authHeader) {
         String token = authHeader.substring(7);
         // Hapus "Bearer ";
-        return ResponseEntity.ok(customerService.getPlafon(token));
+        return ResponseEntity.ok(CustomerService.getPlafon(token));
     }
 
+    @PostMapping("/getSimulasi")
+    public ResponseEntity<PengajuanCustomerRequest> getSimulasi(@RequestBody SimulasiRequest simulasiRequest, @RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.substring(7);
+        return ResponseEntity.ok(pengajuanService.getSimulasiPengajuan(simulasiRequest.getAmount(),simulasiRequest.getTenor(),token));
+    }
 
 
 

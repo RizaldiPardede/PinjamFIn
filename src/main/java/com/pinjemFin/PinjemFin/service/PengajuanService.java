@@ -1,6 +1,8 @@
 package com.pinjemFin.PinjemFin.service;
 
+import com.pinjemFin.PinjemFin.dto.PengajuanCustomerRequest;
 import com.pinjemFin.PinjemFin.models.Pengajuan;
+import com.pinjemFin.PinjemFin.models.Plafon;
 import com.pinjemFin.PinjemFin.models.UsersEmployee;
 import com.pinjemFin.PinjemFin.models.pengajuan_userEmployee;
 import com.pinjemFin.PinjemFin.repository.EmployeeRepository;
@@ -28,6 +30,9 @@ public class PengajuanService {
 
     @Autowired
     private EmployeeRepository usersEmployeeRepository;
+
+    @Autowired
+    private CustomerService customerService;
 
     @Transactional
     public pengajuan_userEmployee createPengajuan(Pengajuan pengajuan) {
@@ -58,5 +63,17 @@ public class PengajuanService {
 
         return pengajuan
                 .orElseThrow(() -> new RuntimeException("Data pengajuan tidak ditemukan"));
+    }
+
+    public PengajuanCustomerRequest getSimulasiPengajuan(Double amount, int tenor, String token) {
+        PengajuanCustomerRequest pengajuanCustomerRequest = new PengajuanCustomerRequest();
+        Plafon plafon = customerService.getPlafon(token).getPlafon();
+
+        pengajuanCustomerRequest.setAmount(amount);
+        pengajuanCustomerRequest.setTenor(tenor);
+        pengajuanCustomerRequest.setBunga(plafon.getBunga());
+        pengajuanCustomerRequest.setTotal_payment(amount*plafon.getBunga());
+        pengajuanCustomerRequest.setAngsuran((amount*plafon.getBunga())/tenor);
+        return pengajuanCustomerRequest;
     }
 }

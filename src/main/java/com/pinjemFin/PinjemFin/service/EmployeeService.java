@@ -43,6 +43,9 @@ public class EmployeeService {
     @Autowired
     RoleService roleService;
 
+    @Autowired
+    CustomerService customerService;
+
     private final JwtUtil jwtUtil;
 
     public EmployeeService(JwtUtil jwtUtil) {
@@ -207,6 +210,9 @@ public class EmployeeService {
     public Pengajuan disburseBackOffice(UUID pengajuanId) {
         Optional<Pengajuan> pengajuan = pengajuanRepository.findById(pengajuanId);
         Pengajuan ApprovetoDisburse = pengajuan.get();
+        UsersCustomer usersCustomer = ApprovetoDisburse.getId_user_customer();
+        usersCustomer.setSisa_plafon(usersCustomer.getSisa_plafon()-ApprovetoDisburse.getTotal_payment());
+        customerService.saveCustomer(usersCustomer);
         pengajuanRepository.updateStatusById(ApprovetoDisburse.getId_pengajuan(),"Disbursment");
 
         return ApprovetoDisburse;

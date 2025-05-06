@@ -3,14 +3,12 @@ package com.pinjemFin.PinjemFin.service;
 
 import com.pinjemFin.PinjemFin.models.Branch;
 import com.pinjemFin.PinjemFin.repository.BranchRepository;
+import com.pinjemFin.PinjemFin.utils.LocationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class BranchService {
@@ -61,6 +59,17 @@ public class BranchService {
         }
 
         return Optional.empty();
+    }
+
+
+    public Branch getNearestBranch(double inputLat, double inputLon) {
+        List<Branch> branches = branchRepository.findAll();
+
+        return branches.stream()
+                .min(Comparator.comparingDouble(
+                        b -> LocationUtils.calculateDistance(inputLat, inputLon, b.getLatitude_branch(), b.getLongitude_branch())
+                ))
+                .orElse(null);
     }
 
 

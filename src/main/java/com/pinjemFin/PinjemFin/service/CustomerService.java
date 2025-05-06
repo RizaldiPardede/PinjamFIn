@@ -1,9 +1,11 @@
 package com.pinjemFin.PinjemFin.service;
 
+import com.pinjemFin.PinjemFin.dto.DetailCustomerRequest;
 import com.pinjemFin.PinjemFin.models.Plafon;
 import com.pinjemFin.PinjemFin.models.UsersCustomer;
 import com.pinjemFin.PinjemFin.repository.CustomerRepository;
 import com.pinjemFin.PinjemFin.repository.PlafonRepository;
+import com.pinjemFin.PinjemFin.repository.UsersRepository;
 import com.pinjemFin.PinjemFin.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -27,6 +29,15 @@ public class CustomerService {
 
     @Autowired
     PinjamanService pinjamanService;
+
+    @Autowired
+    BranchService branchService;
+
+    @Autowired
+    UsersRepository usersRepository;
+
+    @Autowired
+    PlafonService plafonService;
 
 
     private final JwtUtil jwtUtil;
@@ -52,7 +63,27 @@ public class CustomerService {
 
     }
 
-    public UsersCustomer addCustomer(UsersCustomer usersCustomer) {
+    public UsersCustomer addCustomer(DetailCustomerRequest detailCustomerRequest, String token) {
+        UsersCustomer usersCustomer = new UsersCustomer();
+        usersCustomer.setUsers(usersRepository.findById(UUID.fromString(jwtUtil.extractidUser(token))).get());
+        usersCustomer.setBranch(branchService.getNearestBranch(detailCustomerRequest.getLatitude_alamat(), detailCustomerRequest.getLongitude_alamat()));
+        usersCustomer.setTempat_tgl_lahir(detailCustomerRequest.getTempat_tgl_lahir());
+        usersCustomer.setNo_telp(detailCustomerRequest.getNo_telp());
+        usersCustomer.setAlamat(detailCustomerRequest.getAlamat());
+        usersCustomer.setNik(detailCustomerRequest.getNik());
+        usersCustomer.setNama_ibu_kandung(detailCustomerRequest.getNama_ibu_kandung());
+        usersCustomer.setPekerjaan(detailCustomerRequest.getPekerjaan());
+        usersCustomer.setGaji(detailCustomerRequest.getGaji());
+        usersCustomer.setNo_rek(detailCustomerRequest.getNo_rek());
+        usersCustomer.setStatus_rumah(detailCustomerRequest.getStatus_rumah());
+        Plafon plafon = plafonService.getplafonbycategory("Bronze");
+        usersCustomer.setPlafon(plafon);
+        usersCustomer.setSisa_plafon(plafon.getJumlah_plafon());
+
+        return CustomerRepository.save(usersCustomer);
+    }
+
+    public UsersCustomer saveCustomer(UsersCustomer usersCustomer) {
         return CustomerRepository.save(usersCustomer);
     }
 

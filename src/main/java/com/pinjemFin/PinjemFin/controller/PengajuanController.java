@@ -35,6 +35,7 @@ public class PengajuanController {
         pengajuan.setStatus("bckt_marketing");
         pengajuan.setAngsuran(pengajuanCustomerRequest.getAngsuran());
         pengajuan.setBunga(pengajuanCustomerRequest.getBunga());
+        pengajuan.setTotal_payment(pengajuanCustomerRequest.getTotal_payment());
         String token = authHeader.substring(7); // Hapus "Bearer "
         pengajuan.setId_user_customer(customerService.getUserCustomer(customerService.getUserCustomerIdFromToken(token)));
 

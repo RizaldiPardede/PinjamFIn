@@ -17,4 +17,5 @@ public class PengajuanCustomerRequest {
     private Integer tenor;
     private Double angsuran;
     private Double bunga;
+    private Double total_payment;
 }

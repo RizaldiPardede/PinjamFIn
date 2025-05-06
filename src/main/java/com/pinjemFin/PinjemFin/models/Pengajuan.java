@@ -35,4 +35,7 @@ public class Pengajuan {
 
     @Column(nullable = false)
     private Double bunga;
+
+    @Column(nullable = true)
+    private Double total_payment;
 }

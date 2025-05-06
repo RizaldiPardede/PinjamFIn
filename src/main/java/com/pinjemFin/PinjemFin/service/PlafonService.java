@@ -16,5 +16,8 @@ public class PlafonService {
     @Autowired
     private PlafonRepository plafonRepository;
 
+    public Plafon getplafonbycategory(String jenis_plafon) {
+        return plafonRepository.findPlafonByJenis_plafon(jenis_plafon).get();
+    }
 
 }
