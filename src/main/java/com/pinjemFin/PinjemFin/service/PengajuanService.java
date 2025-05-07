@@ -5,9 +5,7 @@ import com.pinjemFin.PinjemFin.models.Pengajuan;
 import com.pinjemFin.PinjemFin.models.Plafon;
 import com.pinjemFin.PinjemFin.models.UsersEmployee;
 import com.pinjemFin.PinjemFin.models.pengajuan_userEmployee;
-import com.pinjemFin.PinjemFin.repository.EmployeeRepository;
-import com.pinjemFin.PinjemFin.repository.PengajuanEmployeeRepository;
-import com.pinjemFin.PinjemFin.repository.PengajuanRepository;
+import com.pinjemFin.PinjemFin.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +22,8 @@ public class PengajuanService {
 
     @Autowired
     private PengajuanRepository pengajuanRepository;
-
+    @Autowired
+    private PlafonRepository plafonRepository;
     @Autowired
     private PengajuanEmployeeRepository pengajuanUserEmployeeRepository;
 
@@ -66,14 +65,29 @@ public class PengajuanService {
     }
 
     public PengajuanCustomerRequest getSimulasiPengajuan(Double amount, int tenor, String token) {
-        PengajuanCustomerRequest pengajuanCustomerRequest = new PengajuanCustomerRequest();
-        Plafon plafon = customerService.getPlafon(token).getPlafon();
 
-        pengajuanCustomerRequest.setAmount(amount);
-        pengajuanCustomerRequest.setTenor(tenor);
-        pengajuanCustomerRequest.setBunga(plafon.getBunga());
-        pengajuanCustomerRequest.setTotal_payment(amount*plafon.getBunga());
-        pengajuanCustomerRequest.setAngsuran((amount*plafon.getBunga())/tenor);
-        return pengajuanCustomerRequest;
+        if (token == null || token.isEmpty()) {
+            PengajuanCustomerRequest pengajuanCustomerRequest = new PengajuanCustomerRequest();
+            Plafon plafon = plafonRepository.findPlafonByJenis_plafon("Bronze").get();
+
+            pengajuanCustomerRequest.setAmount(amount);
+            pengajuanCustomerRequest.setTenor(tenor);
+            pengajuanCustomerRequest.setBunga(plafon.getBunga());
+            pengajuanCustomerRequest.setTotal_payment(amount*plafon.getBunga());
+            pengajuanCustomerRequest.setAngsuran((amount*plafon.getBunga())/tenor);
+            return pengajuanCustomerRequest;
+        }else {
+            PengajuanCustomerRequest pengajuanCustomerRequest = new PengajuanCustomerRequest();
+            Plafon plafon = customerService.getPlafon(token).getPlafon();
+
+            pengajuanCustomerRequest.setAmount(amount);
+            pengajuanCustomerRequest.setTenor(tenor);
+            pengajuanCustomerRequest.setBunga(plafon.getBunga());
+            pengajuanCustomerRequest.setTotal_payment(amount*plafon.getBunga());
+            pengajuanCustomerRequest.setAngsuran((amount*plafon.getBunga())/tenor);
+            return pengajuanCustomerRequest;
+
+        }
+
     }
 }

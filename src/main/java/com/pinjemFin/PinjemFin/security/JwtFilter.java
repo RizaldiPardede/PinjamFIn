@@ -48,7 +48,7 @@ public class JwtFilter extends GenericFilterBean {
                 ||requestURI.startsWith("/api/reset-password")
                 ||requestURI.startsWith("/api/auth/loginEmployee")
                 ||requestURI.startsWith("/api/ws")
-                ||requestURI.startsWith("/api/customer/getSimulasi")
+                ||requestURI.startsWith("/api/customer/getSimulasiNoAuth")
 
         ) {
 

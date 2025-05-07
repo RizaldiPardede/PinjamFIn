@@ -80,7 +80,11 @@ public class CustomerController {
         return ResponseEntity.ok(pengajuanService.getSimulasiPengajuan(simulasiRequest.getAmount(),simulasiRequest.getTenor(),token));
     }
 
-
+    @PostMapping("/getSimulasiNoAuth")
+    public ResponseEntity<PengajuanCustomerRequest> getSimulasi(@RequestBody SimulasiRequest simulasiRequest) {
+        String token = null;
+        return ResponseEntity.ok(pengajuanService.getSimulasiPengajuan(simulasiRequest.getAmount(),simulasiRequest.getTenor(),token));
+    }
 
 
 }

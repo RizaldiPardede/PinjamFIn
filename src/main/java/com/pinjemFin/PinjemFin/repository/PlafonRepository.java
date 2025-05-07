@@ -19,4 +19,5 @@ public interface PlafonRepository extends JpaRepository<Plafon, UUID> {
     Optional<Plafon> findPlafonByJenis_plafon(@Param("jenis_plafon") String jenis_plafon);
 
 
+
 }
