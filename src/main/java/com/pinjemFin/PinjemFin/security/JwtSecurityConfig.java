@@ -33,7 +33,8 @@
                             .requestMatchers("/customer/reset-password").permitAll()
                             .requestMatchers("/customer/reset-password/**").permitAll()
                             .requestMatchers("/auth/loginEmployee").permitAll()
-                            .requestMatchers("/ws/**").permitAll() // Mengizinkan akses ke WebSocket endpoint)// Buka akses login
+                            .requestMatchers("/ws/**").permitAll()
+                            .requestMatchers("/customer/getSimulasi").permitAll()// Mengizinkan akses ke WebSocket endpoint)// Buka akses login
                             .anyRequest().authenticated()  // Endpoint lain harus pakai token
                     )
                     .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

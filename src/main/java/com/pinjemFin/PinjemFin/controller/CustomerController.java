@@ -66,7 +66,7 @@ public class CustomerController {
         return ResponseEntity.ok(response);
     }
 
-    @PreAuthorize("@permissionEvaluator.hasAccess(authentication, 'feature_getplafon')")
+//    @PreAuthorize("@permissionEvaluator.hasAccess(authentication, 'feature_getplafon')")
     @GetMapping("/getPlafon")
     public ResponseEntity<UsersCustomer> getplafon(@RequestHeader("Authorization") String authHeader) {
         String token = authHeader.substring(7);
