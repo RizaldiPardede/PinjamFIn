@@ -73,8 +73,9 @@ public class PengajuanService {
             pengajuanCustomerRequest.setAmount(amount);
             pengajuanCustomerRequest.setTenor(tenor);
             pengajuanCustomerRequest.setBunga(plafon.getBunga());
-            pengajuanCustomerRequest.setTotal_payment(amount*(plafon.getBunga()/100));
-            pengajuanCustomerRequest.setAngsuran((amount*(plafon.getBunga()/100))/tenor);
+            Double totalPengajuan = amount+(amount*(plafon.getBunga()/100));
+            pengajuanCustomerRequest.setTotal_payment(totalPengajuan);
+            pengajuanCustomerRequest.setAngsuran(totalPengajuan/tenor);
             return pengajuanCustomerRequest;
         }else {
             PengajuanCustomerRequest pengajuanCustomerRequest = new PengajuanCustomerRequest();
@@ -83,8 +84,10 @@ public class PengajuanService {
             pengajuanCustomerRequest.setAmount(amount);
             pengajuanCustomerRequest.setTenor(tenor);
             pengajuanCustomerRequest.setBunga(plafon.getBunga());
-            pengajuanCustomerRequest.setTotal_payment(amount*(plafon.getBunga()/100));
-            pengajuanCustomerRequest.setAngsuran((amount*(plafon.getBunga()/100))/tenor);
+
+            Double totalPengajuan = amount+(amount*(plafon.getBunga()/100));
+            pengajuanCustomerRequest.setTotal_payment(totalPengajuan);
+            pengajuanCustomerRequest.setAngsuran(totalPengajuan/tenor);
             return pengajuanCustomerRequest;
 
         }
