@@ -1,13 +1,13 @@
 package com.pinjemFin.PinjemFin.controller;
 
-import com.pinjemFin.PinjemFin.dto.PengajuanCustomerRequest;
-import com.pinjemFin.PinjemFin.dto.PengajuanRequest;
-import com.pinjemFin.PinjemFin.dto.PengajuanToPeminjamanRequest;
+import com.google.firebase.internal.FirebaseService;
+import com.pinjemFin.PinjemFin.dto.*;
 import com.pinjemFin.PinjemFin.models.Pengajuan;
 import com.pinjemFin.PinjemFin.models.Pinjaman;
 import com.pinjemFin.PinjemFin.models.pengajuan_userEmployee;
 import com.pinjemFin.PinjemFin.repository.PengajuanRepository;
 import com.pinjemFin.PinjemFin.service.CustomerService;
+import com.pinjemFin.PinjemFin.service.NotificationService;
 import com.pinjemFin.PinjemFin.service.PengajuanEmployeeService;
 import com.pinjemFin.PinjemFin.service.PengajuanService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.UUID;
 
 @RestController
@@ -25,6 +26,8 @@ public class PengajuanController {
 
     @Autowired
     CustomerService customerService;
+    @Autowired
+    NotificationService firebaseService;
 
     @PostMapping("/CreatePengajuan")
     public ResponseEntity<pengajuan_userEmployee> createPengajuan(@RequestBody PengajuanCustomerRequest pengajuanCustomerRequest,
@@ -48,6 +51,15 @@ public class PengajuanController {
     public Pengajuan getPengajuanById(@RequestBody PengajuanRequest pengajuanRequest) {
 //        UUID idpengajuan = UUID.fromString(pengajuanRequest.get);
         return pengajuanService.getPengajuanById(pengajuanRequest.getId_pengajuan());
+    }
+
+
+    @PostMapping("/sendNotification")
+    public ResponseEntity<ResponseMessage> sendNotification(@RequestBody NotificationRequest request) {
+        ResponseMessage responseMessage = new ResponseMessage();
+        responseMessage.setMessage("Notification sent");
+        firebaseService.sendNotification(request.getToken(), request.getTitle(), request.getBody());
+        return ResponseEntity.ok(responseMessage);
     }
 
 }
