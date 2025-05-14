@@ -1,4 +1,8 @@
 package com.pinjemFin.PinjemFin.dto;
 
-public class getPorfileResponse {
+import lombok.Data;
+
+@Data
+public class GetProfileResponse {
+    private String imageProfile;
 }

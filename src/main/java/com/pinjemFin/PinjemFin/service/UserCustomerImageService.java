@@ -58,4 +58,10 @@ public class UserCustomerImageService {
             return "Gambar " + imageType + " berhasil diunggah.";
         }
     }
+    public String getImageProfile(String token) throws Exception {
+        UsersCustomer user = customerService.getUserCustomer(customerService.getUserCustomerIdFromToken(token));
+        UserCustomerImage userCustomerImage = usersCustomerImageRepository.findProfileImageByCustomerId(user.getId_user_customer()).get();
+        return userCustomerImage.getImageUrl();
+    }
+
 }

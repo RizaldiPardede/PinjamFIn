@@ -1,5 +1,6 @@
 package com.pinjemFin.PinjemFin.controller;
 
+import com.pinjemFin.PinjemFin.dto.GetProfileResponse;
 import com.pinjemFin.PinjemFin.service.UserCustomerImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,5 +32,13 @@ public class UserCustomerImageController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("message", "Gagal upload gambar: " + e.getMessage()));
         }
+    }
+
+    @PostMapping("/getProfileImage")
+    public ResponseEntity<GetProfileResponse> getProfileImage(@RequestHeader("Authorization") String authHeader) throws Exception {
+        String token = authHeader.substring(7); // remove "Bearer "
+        GetProfileResponse getProfileResponse = new GetProfileResponse();
+        getProfileResponse.setImageProfile(userCustomerImageService.getImageProfile(token));
+        return ResponseEntity.ok(getProfileResponse);
     }
 }
