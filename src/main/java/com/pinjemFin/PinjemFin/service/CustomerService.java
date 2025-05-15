@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class CustomerService {
@@ -39,6 +40,8 @@ public class CustomerService {
     @Autowired
     PlafonService plafonService;
 
+    @Autowired
+    UserCustomerImageService userCustomerImageService;
 
     private final JwtUtil jwtUtil;
 
@@ -50,16 +53,31 @@ public class CustomerService {
 
 
     @Transactional
-    public ResponseEntity<?> cekUpdateAkun(UUID id_user) {
+    public ResponseEntity<String> cekUpdateAkun(String token) {
+        UUID id_user = UUID.fromString(jwtUtil.extractidUser(token));
         Optional<UsersCustomer> usersCustomerOptional = CustomerRepository.findByUsersIdUser(id_user);
-        if (usersCustomerOptional.isPresent()) {
-            return ResponseEntity.ok(usersCustomerOptional.get());
+        if (userCustomerImageService.hasAllRequiredImages(usersCustomerOptional.get().getId_user_customer())){
+            if (usersCustomerOptional.isPresent()) {
+                return ResponseEntity.ok("Sudah Melengkapi");
+            }
+            else {
+                return ResponseEntity
+                        .status(404) // HTTP 404 Not Found
+                        .body("{\"response\":\"Silakan update akun terlebih dahulu\"}");
+            }
         }
         else {
+            List<String> missingImages = userCustomerImageService.getMissingImages(usersCustomerOptional.get().getId_user_customer());
+            String formattedList = missingImages.stream()
+                    .map(name -> name.replace("_", " "))  // ubah underscore jadi spasi
+                    .collect(Collectors.joining(", "));
+
+            String message = "Anda belum upload " + formattedList;
             return ResponseEntity
                     .status(404) // HTTP 404 Not Found
-                    .body("{\"response\":\"Silakan update akun terlebih dahulu\"}");
+                    .body(message);
         }
+
 
     }
 

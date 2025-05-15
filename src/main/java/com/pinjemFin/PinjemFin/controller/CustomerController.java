@@ -1,9 +1,6 @@
 package com.pinjemFin.PinjemFin.controller;
 
-import com.pinjemFin.PinjemFin.dto.CekUpdateAkunRequest;
-import com.pinjemFin.PinjemFin.dto.DetailCustomerRequest;
-import com.pinjemFin.PinjemFin.dto.PengajuanCustomerRequest;
-import com.pinjemFin.PinjemFin.dto.SimulasiRequest;
+import com.pinjemFin.PinjemFin.dto.*;
 import com.pinjemFin.PinjemFin.models.UsersCustomer;
 import com.pinjemFin.PinjemFin.service.CustomerService;
 import com.pinjemFin.PinjemFin.service.PasswordResetService;
@@ -32,10 +29,13 @@ public class CustomerController {
     @Autowired
     private PasswordResetService passwordResetService;
 
+
     @PostMapping("/CekUpdateAkun")
-    public ResponseEntity<?> cekUpdateAkun(@RequestBody CekUpdateAkunRequest request) {
-        UUID id_user = request.getId_user(); // Ambil ID dari request body
-        return CustomerService.cekUpdateAkun(id_user); // Panggil service untuk mendapatkan response
+    public ResponseMessage cekUpdateAkun(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.substring(7);
+        ResponseMessage responseMessage = new ResponseMessage();
+        responseMessage.setMessage(CustomerService.cekUpdateAkun(token).getBody());
+        return responseMessage;
     }
 
     @PostMapping("/AddDetailAkun")
