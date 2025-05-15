@@ -1,4 +1,4 @@
 package com.pinjemFin.PinjemFin.dto;
 
-public class PengajuanCustomerRequest {
+public class PinjamanResponse {
 }
