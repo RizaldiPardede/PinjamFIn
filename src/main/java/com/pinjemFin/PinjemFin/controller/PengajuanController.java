@@ -1,22 +1,15 @@
 package com.pinjemFin.PinjemFin.controller;
 
-import com.google.firebase.internal.FirebaseService;
 import com.pinjemFin.PinjemFin.dto.*;
 import com.pinjemFin.PinjemFin.models.Pengajuan;
-import com.pinjemFin.PinjemFin.models.Pinjaman;
 import com.pinjemFin.PinjemFin.models.pengajuan_userEmployee;
-import com.pinjemFin.PinjemFin.repository.PengajuanRepository;
 import com.pinjemFin.PinjemFin.service.CustomerService;
 import com.pinjemFin.PinjemFin.service.NotificationService;
-import com.pinjemFin.PinjemFin.service.PengajuanEmployeeService;
 import com.pinjemFin.PinjemFin.service.PengajuanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/pengajuan")
@@ -30,21 +23,29 @@ public class PengajuanController {
     NotificationService firebaseService;
 
     @PostMapping("/CreatePengajuan")
-    public ResponseEntity<pengajuan_userEmployee> createPengajuan(@RequestBody PengajuanCustomerRequest pengajuanCustomerRequest,
+    public ResponseEntity<?> createPengajuan(@RequestBody PengajuanCustomerRequest pengajuanCustomerRequest,
                                                                   @RequestHeader("Authorization") String authHeader) {
-        Pengajuan pengajuan = new Pengajuan();
-        pengajuan.setAmount(pengajuanCustomerRequest.getAmount());
-        pengajuan.setTenor(pengajuanCustomerRequest.getTenor());
-        pengajuan.setStatus("bckt_marketing");
-        pengajuan.setAngsuran(pengajuanCustomerRequest.getAngsuran());
-        pengajuan.setBunga(pengajuanCustomerRequest.getBunga());
-        pengajuan.setTotal_payment(pengajuanCustomerRequest.getTotal_payment());
-        String token = authHeader.substring(7); // Hapus "Bearer "
-        pengajuan.setId_user_customer(customerService.getUserCustomer(customerService.getUserCustomerIdFromToken(token)));
+        Double sisa_plafon = customerService.getUserCustomer(
+                customerService.getUserCustomerIdFromToken(authHeader.substring(7)))
+                .getSisa_plafon();
+        if(pengajuanCustomerRequest.getAmount()<sisa_plafon){
+            Pengajuan savedPengajuan = pengajuanService.createPengajuan(pengajuanCustomerRequest,authHeader);
+            PengajuanResponse pengajuanResponse = new PengajuanResponse();
+            pengajuanResponse.setAmount(savedPengajuan.getAmount());
+            pengajuanResponse.setTenor(savedPengajuan.getTenor());
+            pengajuanResponse.setBunga(savedPengajuan.getBunga());
+            pengajuanResponse.setAngsuran(savedPengajuan.getAngsuran());
+            pengajuanResponse.setTotal_payment(savedPengajuan.getTotal_payment());
+            return new ResponseEntity<>(pengajuanResponse, HttpStatus.CREATED);
+        }
+        else {
+            ResponseMessage responseMessage = new ResponseMessage();
+            responseMessage.setMessage("sisa plafon tidak cukup untuk melakukan pengajuan");
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(responseMessage);
+        }
 
-        pengajuan_userEmployee savedPengajuan = pengajuanService.createPengajuan(pengajuan);
-
-        return new ResponseEntity<>(savedPengajuan, HttpStatus.CREATED);
     }
 
     @PostMapping("/getPengajuan")

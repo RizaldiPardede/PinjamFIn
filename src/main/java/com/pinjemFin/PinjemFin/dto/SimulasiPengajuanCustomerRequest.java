@@ -1,14 +1,12 @@
 package com.pinjemFin.PinjemFin.dto;
 
-import com.pinjemFin.PinjemFin.models.UsersCustomer;
-import jakarta.persistence.*;
 import lombok.Data;
 
 
 
 
 @Data
-public class PengajuanCustomerRequest {
+public class SimulasiPengajuanCustomerRequest {
 
 
 //    private UsersCustomer user_customer;

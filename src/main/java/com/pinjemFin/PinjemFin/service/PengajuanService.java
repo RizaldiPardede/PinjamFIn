@@ -1,6 +1,7 @@
 package com.pinjemFin.PinjemFin.service;
 
 import com.pinjemFin.PinjemFin.dto.PengajuanCustomerRequest;
+import com.pinjemFin.PinjemFin.dto.SimulasiPengajuanCustomerRequest;
 import com.pinjemFin.PinjemFin.models.Pengajuan;
 import com.pinjemFin.PinjemFin.models.Plafon;
 import com.pinjemFin.PinjemFin.models.UsersEmployee;
@@ -34,7 +35,19 @@ public class PengajuanService {
     private CustomerService customerService;
 
     @Transactional
-    public pengajuan_userEmployee createPengajuan(Pengajuan pengajuan) {
+    public Pengajuan createPengajuan(PengajuanCustomerRequest pengajuanCustomerRequest,String authHeader) {
+        String token = authHeader.substring(7);
+        Pengajuan pengajuan = new Pengajuan();
+        pengajuan.setAmount(pengajuanCustomerRequest.getAmount());
+        pengajuan.setTenor(pengajuanCustomerRequest.getTenor());
+        pengajuan.setStatus("bckt_marketing");
+        SimulasiPengajuanCustomerRequest hitungPengajuanCustomerRequest = getSimulasiPengajuan(
+                pengajuan.getAmount(),pengajuan.getTenor(),token);
+
+        pengajuan.setAngsuran(hitungPengajuanCustomerRequest.getAngsuran());
+        pengajuan.setBunga(hitungPengajuanCustomerRequest.getBunga());
+        pengajuan.setTotal_payment(hitungPengajuanCustomerRequest.getTotal_payment());
+        pengajuan.setId_user_customer(customerService.getUserCustomer(customerService.getUserCustomerIdFromToken(token)));
         // 1. Simpan pengajuan baru
         pengajuanRepository.save(pengajuan);
 
@@ -50,7 +63,8 @@ public class PengajuanService {
             pengajuan_userEmployee assignment = new pengajuan_userEmployee();
             assignment.setId_pengajuan(pengajuan);
             assignment.setId_user_employee(usersEmployeeRepository.findById(leastBusyMarketing.get(0).getId_user_employee()).get());
-            return pengajuanUserEmployeeRepository.save(assignment);
+            pengajuanUserEmployeeRepository.save(assignment);
+            return pengajuan;
         }
         else {
             throw new RuntimeException("Tidak ada marketing yang tersedia untuk menangani pengajuan ini.");
@@ -64,31 +78,31 @@ public class PengajuanService {
                 .orElseThrow(() -> new RuntimeException("Data pengajuan tidak ditemukan"));
     }
 
-    public PengajuanCustomerRequest getSimulasiPengajuan(Double amount, int tenor, String token) {
+    public SimulasiPengajuanCustomerRequest getSimulasiPengajuan(Double amount, int tenor, String token) {
 
         if (token == null || token.isEmpty()) {
-            PengajuanCustomerRequest pengajuanCustomerRequest = new PengajuanCustomerRequest();
+            SimulasiPengajuanCustomerRequest simulasiPengajuanCustomerRequest = new SimulasiPengajuanCustomerRequest();
             Plafon plafon = plafonRepository.findPlafonByJenis_plafon("Bronze").get();
 
-            pengajuanCustomerRequest.setAmount(amount);
-            pengajuanCustomerRequest.setTenor(tenor);
-            pengajuanCustomerRequest.setBunga(plafon.getBunga());
+            simulasiPengajuanCustomerRequest.setAmount(amount);
+            simulasiPengajuanCustomerRequest.setTenor(tenor);
+            simulasiPengajuanCustomerRequest.setBunga(plafon.getBunga());
             Double totalPengajuan = amount+(amount*(plafon.getBunga()/100));
-            pengajuanCustomerRequest.setTotal_payment(totalPengajuan);
-            pengajuanCustomerRequest.setAngsuran(totalPengajuan/tenor);
-            return pengajuanCustomerRequest;
+            simulasiPengajuanCustomerRequest.setTotal_payment(totalPengajuan);
+            simulasiPengajuanCustomerRequest.setAngsuran(totalPengajuan/tenor);
+            return simulasiPengajuanCustomerRequest;
         }else {
-            PengajuanCustomerRequest pengajuanCustomerRequest = new PengajuanCustomerRequest();
+            SimulasiPengajuanCustomerRequest simulasiPengajuanCustomerRequest = new SimulasiPengajuanCustomerRequest();
             Plafon plafon = customerService.getPlafon(token).getPlafon();
 
-            pengajuanCustomerRequest.setAmount(amount);
-            pengajuanCustomerRequest.setTenor(tenor);
-            pengajuanCustomerRequest.setBunga(plafon.getBunga());
+            simulasiPengajuanCustomerRequest.setAmount(amount);
+            simulasiPengajuanCustomerRequest.setTenor(tenor);
+            simulasiPengajuanCustomerRequest.setBunga(plafon.getBunga());
 
             Double totalPengajuan = amount+(amount*(plafon.getBunga()/100));
-            pengajuanCustomerRequest.setTotal_payment(totalPengajuan);
-            pengajuanCustomerRequest.setAngsuran(totalPengajuan/tenor);
-            return pengajuanCustomerRequest;
+            simulasiPengajuanCustomerRequest.setTotal_payment(totalPengajuan);
+            simulasiPengajuanCustomerRequest.setAngsuran(totalPengajuan/tenor);
+            return simulasiPengajuanCustomerRequest;
 
         }
 

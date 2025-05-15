@@ -8,7 +8,6 @@ import com.pinjemFin.PinjemFin.service.PengajuanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -75,13 +74,13 @@ public class CustomerController {
     }
 
     @PostMapping("/getSimulasi")
-    public ResponseEntity<PengajuanCustomerRequest> getSimulasi(@RequestBody SimulasiRequest simulasiRequest, @RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<SimulasiPengajuanCustomerRequest> getSimulasi(@RequestBody SimulasiRequest simulasiRequest, @RequestHeader("Authorization") String authHeader) {
         String token = authHeader.substring(7);
         return ResponseEntity.ok(pengajuanService.getSimulasiPengajuan(simulasiRequest.getAmount(),simulasiRequest.getTenor(),token));
     }
 
     @PostMapping("/getSimulasiNoAuth")
-    public ResponseEntity<PengajuanCustomerRequest> getSimulasi(@RequestBody SimulasiRequest simulasiRequest) {
+    public ResponseEntity<SimulasiPengajuanCustomerRequest> getSimulasi(@RequestBody SimulasiRequest simulasiRequest) {
         String token = null;
         return ResponseEntity.ok(pengajuanService.getSimulasiPengajuan(simulasiRequest.getAmount(),simulasiRequest.getTenor(),token));
     }
