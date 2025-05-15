@@ -1,6 +1,7 @@
 package com.pinjemFin.PinjemFin.service;
 
 import com.pinjemFin.PinjemFin.dto.DetailCustomerRequest;
+import com.pinjemFin.PinjemFin.dto.InformasiPengajuanResponse;
 import com.pinjemFin.PinjemFin.models.Plafon;
 import com.pinjemFin.PinjemFin.models.UsersCustomer;
 import com.pinjemFin.PinjemFin.repository.CustomerRepository;
@@ -156,5 +157,38 @@ public class CustomerService {
 
     public UsersCustomer getUserCustomer(UUID id){
         return CustomerRepository.findById(id).get();
+    }
+
+    public InformasiPengajuanResponse getInformasiPengajuan(String authHeader) {
+        String token = authHeader.substring(7);
+        UsersCustomer usersCustomer = getPlafon(token);
+        InformasiPengajuanResponse response = new InformasiPengajuanResponse();
+
+        response.setJenis_plafon(usersCustomer.getPlafon().getJenis_plafon());
+        response.setJumlah_plafon(usersCustomer.getPlafon().getJumlah_plafon());
+        response.setSisa_plafon(usersCustomer.getSisa_plafon());
+
+        Double jumlPinjLunas = pinjamanService.getTotalPeminjamanLunasByUser("Bearer "+token);
+        response.setJumlah_pinjamanLunas(jumlPinjLunas);
+
+        Double JumlPinjSaatIni = pinjamanService.getTotalPeminjamanByUser("Bearer "+token)-jumlPinjLunas;
+        response.setJumlah_pinjaman(JumlPinjSaatIni);
+
+        List<Plafon> plafons = plafonRepository.findAllSorted();
+        Plafon plafonlvUp = plafons.get(0);
+        for (int i = 0; i < plafons.size(); i++){
+            if(plafons.get(i).getJumlah_plafon().equals(usersCustomer.getPlafon().getJumlah_plafon())){
+                plafonlvUp = plafons.get(i+1);
+            }
+            else{
+                break;
+            }
+        }
+
+        response.setPersentasilvup(jumlPinjLunas/plafonlvUp.getJumlah_plafon());
+        return response;
+
+
+
     }
 }

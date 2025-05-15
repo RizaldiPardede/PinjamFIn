@@ -90,6 +90,13 @@ public class PinjamanService {
         return pinjamanRepository.getTotalPeminjamanLunasByUser(idUserCustomer);
     }
 
+    public Double getTotalPeminjamanByUser(String token) {
+        String tokenTrimp = token.substring(7); // Hapus "Bearer "
+        UUID idUserCustomer = customerService.getUserCustomerIdFromToken(tokenTrimp);
+
+        return pinjamanRepository.getTotalPeminjamanByUser(idUserCustomer);
+    }
+
 
 
 

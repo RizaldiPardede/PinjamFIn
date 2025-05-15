@@ -85,5 +85,10 @@ public class CustomerController {
         return ResponseEntity.ok(pengajuanService.getSimulasiPengajuan(simulasiRequest.getAmount(),simulasiRequest.getTenor(),token));
     }
 
+    @PostMapping("/getInformasiPengajuan")
+    public ResponseEntity<InformasiPengajuanResponse> getInformasiPengajuan(@RequestHeader("Authorization") String authHeader) {
+
+        return ResponseEntity.ok(CustomerService.getInformasiPengajuan(authHeader));
+    }
 
 }
