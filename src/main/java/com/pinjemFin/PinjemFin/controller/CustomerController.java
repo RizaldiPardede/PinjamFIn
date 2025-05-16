@@ -97,11 +97,12 @@ public class CustomerController {
     }
 
     @PostMapping("/cekEmailCustomer")
-    public ResponseEntity<?> cekEmailCustomer(@RequestBody CekEmailRequest cekEmailRequest) {
+    public ResponseEntity<ResponseMessage> cekEmailCustomer(@RequestBody CekEmailRequest cekEmailRequest) {
         ResponseMessage responseMessage = new ResponseMessage();
         Optional<Users> optionalUser = authService.cekEmailUsersCustomer(cekEmailRequest.getEmail());
         if (optionalUser.isPresent()) {
-            return ResponseEntity.ok(optionalUser.get());
+            responseMessage.setMessage("Email already used");
+            return ResponseEntity.ok(responseMessage);
         }
         else {
             responseMessage.setMessage("Can Register");
