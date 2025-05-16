@@ -35,7 +35,8 @@
                             .requestMatchers("/auth/loginEmployee").permitAll()
                             .requestMatchers("/ws/**").permitAll()
                             .requestMatchers("/customer/getSimulasiNoAuth").permitAll()
-                            .requestMatchers("/customer/cekEmailCustomer").permitAll()// Mengizinkan akses ke WebSocket endpoint)// Buka akses login
+                            .requestMatchers("/customer/cekEmailCustomer").permitAll()
+                            .requestMatchers("/auth/loginWithgoogle").permitAll()// Mengizinkan akses ke WebSocket endpoint)// Buka akses login
                             .anyRequest().authenticated()  // Endpoint lain harus pakai token
                     )
                     .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -50,6 +50,7 @@ public class JwtFilter extends GenericFilterBean {
                 ||requestURI.startsWith("/api/ws")
                 ||requestURI.startsWith("/api/customer/getSimulasiNoAuth")
                 ||requestURI.startsWith("/api/customer/cekEmailCustomer")
+                ||requestURI.startsWith("/api/auth/loginWithgoogle")
 
         ) {
 
