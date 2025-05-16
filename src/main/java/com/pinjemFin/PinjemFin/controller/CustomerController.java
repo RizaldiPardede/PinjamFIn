@@ -1,7 +1,9 @@
 package com.pinjemFin.PinjemFin.controller;
 
 import com.pinjemFin.PinjemFin.dto.*;
+import com.pinjemFin.PinjemFin.models.Users;
 import com.pinjemFin.PinjemFin.models.UsersCustomer;
+import com.pinjemFin.PinjemFin.service.AuthService;
 import com.pinjemFin.PinjemFin.service.CustomerService;
 import com.pinjemFin.PinjemFin.service.PasswordResetService;
 import com.pinjemFin.PinjemFin.service.PengajuanService;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -28,6 +31,8 @@ public class CustomerController {
     @Autowired
     private PasswordResetService passwordResetService;
 
+    @Autowired
+    private AuthService authService;
 
     @PostMapping("/CekUpdateAkun")
     public ResponseMessage cekUpdateAkun(@RequestHeader("Authorization") String authHeader) {
@@ -89,6 +94,20 @@ public class CustomerController {
     public ResponseEntity<InformasiPengajuanResponse> getInformasiPengajuan(@RequestHeader("Authorization") String authHeader) {
 
         return ResponseEntity.ok(CustomerService.getInformasiPengajuan(authHeader));
+    }
+
+    @PostMapping("/cekEmailCustomer")
+    public ResponseEntity<?> cekEmailCustomer(@RequestBody CekEmailRequest cekEmailRequest) {
+        ResponseMessage responseMessage = new ResponseMessage();
+        Optional<Users> optionalUser = authService.cekEmailUsersCustomer(cekEmailRequest.getEmail());
+        if (optionalUser.isPresent()) {
+            return ResponseEntity.ok(optionalUser.get());
+        }
+        else {
+            responseMessage.setMessage("Can Register");
+            return ResponseEntity.ok(responseMessage);
+        }
+
     }
 
 }

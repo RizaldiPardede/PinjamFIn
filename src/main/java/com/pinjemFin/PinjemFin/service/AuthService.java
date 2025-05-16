@@ -6,8 +6,10 @@ import com.pinjemFin.PinjemFin.models.Role;
 import com.pinjemFin.PinjemFin.models.Users;
 import com.pinjemFin.PinjemFin.repository.RoleRepository;
 import com.pinjemFin.PinjemFin.repository.UsersRepository;
+import com.pinjemFin.PinjemFin.utils.CustomException;
 import com.pinjemFin.PinjemFin.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -90,6 +92,17 @@ public class AuthService {
         role.setNama_role("customer");
         users.setRole(role);
 
-        return usersRepository.save(users);
+        try {
+            return usersRepository.save(users);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage() != null && e.getMessage().contains("UK6dotkott2kjsp8vw4d0m25fb7")) {
+                throw new CustomException("Email telah digunakan");
+            }
+            throw e; // lempar error lain jika bukan karena duplikat email
+        }
+    }
+
+    public Optional<Users> cekEmailUsersCustomer(String email) {
+        return usersRepository.findByEmail(email);
     }
 }
