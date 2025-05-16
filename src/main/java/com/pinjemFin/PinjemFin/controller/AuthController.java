@@ -44,6 +44,17 @@ public class AuthController {
         return ResponseEntity.ok(new JwtResponse(token));
     }
 
+    @PostMapping("/loginWithgoogle")
+    public ResponseEntity<?> loginWithgoogle(@RequestBody loginGoogleRequest loginRequest) {
+        String token = authService.authenticateWithFirebase(loginRequest.getFirebaseIdToken());
+
+        if (token == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+        }
+
+        return ResponseEntity.ok(new JwtResponse(token));
+    }
+
     @PostMapping("/loginEmployee")
     public ResponseEntity<?> login(@RequestBody LoginRequestEmployee loginRequest) {
         Users users = employeeService.getUsersEmployee(loginRequest.getNip())

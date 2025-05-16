@@ -1,6 +1,9 @@
 package com.pinjemFin.PinjemFin.service;
 
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.FirebaseToken;
 import com.pinjemFin.PinjemFin.dto.RegisterRequest;
 import com.pinjemFin.PinjemFin.models.Role;
 import com.pinjemFin.PinjemFin.models.Users;
@@ -104,5 +107,31 @@ public class AuthService {
 
     public Optional<Users> cekEmailUsersCustomer(String email) {
         return usersRepository.findByEmail(email);
+    }
+
+    public String authenticateWithFirebase(String firebaseIdToken) {
+        try {
+
+            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(firebaseIdToken);
+            String email = decodedToken.getEmail();
+
+            logger.info("Firebase token valid. Email: {}", email);
+
+
+            Optional<Users> userOptional = usersRepository.findByEmail(email);
+
+            if (userOptional.isEmpty()) {
+                throw new RuntimeException("User belum terdaftar di sistem");
+            }
+
+            Users user = userOptional.get();
+
+
+            return jwtUtil.generateToken(user);
+
+        } catch (FirebaseAuthException e) {
+            logger.error("Firebase token tidak valid: {}", e.getMessage());
+            throw new RuntimeException("Token Firebase tidak valid");
+        }
     }
 }

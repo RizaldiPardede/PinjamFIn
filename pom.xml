@@ -129,6 +129,12 @@
 			<version>1.37.0</version>
 		</dependency>
 
+		<dependency>
+			<groupId>com.google.firebase</groupId>
+			<artifactId>firebase-admin</artifactId>
+			<version>9.2.0</version> <!-- atau versi terbaru -->
+		</dependency>
+
 
 
 	</dependencies>
