@@ -31,5 +31,8 @@ public class Users {
     @ManyToOne
     @JoinColumn(name = "id_role")
     private Role role;
+
+    @Column(nullable = true)
+    private Boolean isActive;
 }
 

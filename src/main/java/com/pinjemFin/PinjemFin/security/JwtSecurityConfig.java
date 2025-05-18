@@ -27,8 +27,8 @@
                     .csrf(csrf -> csrf.disable())
                     .cors(cors -> cors.configurationSource(WebConfig.corsConfigurationSource()))
                     .authorizeHttpRequests(auth -> auth
-                            .requestMatchers("/auth/login").permitAll() // Buka akses login
-                            .requestMatchers("/auth/registerAkunCustomer").permitAll() // Buka akses register
+                            .requestMatchers("/auth/login").permitAll()
+                            .requestMatchers("/auth/registerAkunCustomer").permitAll()
                             .requestMatchers("/customer/forgot-password").permitAll()
                             .requestMatchers("/customer/reset-password").permitAll()
                             .requestMatchers("/customer/reset-password/**").permitAll()
@@ -36,7 +36,9 @@
                             .requestMatchers("/ws/**").permitAll()
                             .requestMatchers("/customer/getSimulasiNoAuth").permitAll()
                             .requestMatchers("/customer/cekEmailCustomer").permitAll()
-                            .requestMatchers("/auth/loginWithgoogle").permitAll()// Mengizinkan akses ke WebSocket endpoint)// Buka akses login
+                            .requestMatchers("/auth/loginWithgoogle").permitAll()
+                            .requestMatchers("/auth/emailActivation").permitAll()
+                            .requestMatchers("/auth//registerAuthGoogle").permitAll()// baru
                             .anyRequest().authenticated()  // Endpoint lain harus pakai token
                     )
                     .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

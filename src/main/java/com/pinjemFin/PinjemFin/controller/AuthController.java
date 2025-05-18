@@ -31,6 +31,9 @@ public class AuthController {
     @Autowired
     private RoleFeatureService roleFeatureService;
 
+    @Autowired
+    private AccountActivationService accountActivationService;
+
 
 
     @PostMapping("/login")
@@ -43,6 +46,8 @@ public class AuthController {
 
         return ResponseEntity.ok(new JwtResponse(token));
     }
+
+
 
     @PostMapping("/loginWithgoogle")
     public ResponseEntity<?> loginWithgoogle(@RequestBody loginGoogleRequest loginRequest) {
@@ -70,7 +75,7 @@ public class AuthController {
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.setToken(token);
         loginResponse.setFeatures(features);
-
+        loginResponse.setIsActive(users.getIsActive());
         return ResponseEntity.ok(loginResponse);
     }
 
@@ -110,6 +115,18 @@ public class AuthController {
         return ResponseEntity.ok(new JwtResponse(token));
     }
 
+    @PostMapping("/registerAuthGoogle")
+    public ResponseEntity<?> registerAuthGoogle(@RequestBody RegisterRequest RegisterRequest) {
+        authService.registerUsersAuthGoogle(RegisterRequest);
+
+        String token = authService.authenticateUser(RegisterRequest.getUsername(), RegisterRequest.getPassword());
+        if (token == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+        }
+
+        return ResponseEntity.ok(new JwtResponse(token));
+    }
+
     @PostMapping("/forgot-password")
     public ResponseEntity<Map<String, String>> forgotPassword(@RequestBody Map<String, String> request) {
         return passwordResetService.handleForgotPassword(request.get("email"));
@@ -133,4 +150,10 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.OK).body("test");
     }
 
+    @PostMapping("/emailActivation")
+    public ResponseEntity<ResponseMessage> emailActivation(@RequestBody TokenActivationRequest tokenActivationRequest ) {
+        ResponseMessage responseMessage = new ResponseMessage();
+        responseMessage.setMessage(accountActivationService.ActivationEmail(tokenActivationRequest.getTokenActivation()));
+        return ResponseEntity.ok(responseMessage);
+    }
 }

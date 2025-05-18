@@ -64,6 +64,7 @@ public class EmployeeService {
         users.setPassword(passwordEncoder.encode(rawPassword)); // Simpan hashed password
         users.setNama(usersEmployeeUsersRequest.getUsers().getNama());
         users.setRole(roleRepository.findById(usersEmployeeUsersRequest.getUsers().getId_role()).get());
+        users.setIsActive(false);
         Users usersaved = usersRepository.save(users);
 
         // Set data employee

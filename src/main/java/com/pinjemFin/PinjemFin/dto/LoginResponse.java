@@ -8,4 +8,5 @@ import java.util.List;
 public class LoginResponse {
     private String token;
     private List<String> features;
+    private Boolean isActive;
 }
