@@ -3,6 +3,7 @@ package com.pinjemFin.PinjemFin.service;
 import com.pinjemFin.PinjemFin.dto.DetailCustomerRequest;
 import com.pinjemFin.PinjemFin.dto.InformasiPengajuanResponse;
 import com.pinjemFin.PinjemFin.models.Plafon;
+import com.pinjemFin.PinjemFin.models.Users;
 import com.pinjemFin.PinjemFin.models.UsersCustomer;
 import com.pinjemFin.PinjemFin.repository.CustomerRepository;
 import com.pinjemFin.PinjemFin.repository.PlafonRepository;
@@ -83,9 +84,26 @@ public class CustomerService {
     }
 
     public UsersCustomer addCustomer(DetailCustomerRequest detailCustomerRequest, String token) {
-        UsersCustomer usersCustomer = new UsersCustomer();
-        usersCustomer.setUsers(usersRepository.findById(UUID.fromString(jwtUtil.extractidUser(token))).get());
-        usersCustomer.setBranch(branchService.getNearestBranch(detailCustomerRequest.getLatitude_alamat(), detailCustomerRequest.getLongitude_alamat()));
+        UUID userId = UUID.fromString(jwtUtil.extractidUser(token));
+        Users users = usersRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Cari dulu apakah user ini sudah punya customer
+
+
+        UsersCustomer usersCustomer = getUserCustomer(getUserCustomerIdFromToken(token));
+
+        // Kalau baru, set relasi Users
+        if (usersCustomer.getId_user_customer() == null) {
+            usersCustomer.setUsers(users);
+            Plafon plafon = plafonService.getplafonbycategory("Bronze");
+            usersCustomer.setPlafon(plafon);
+            usersCustomer.setSisa_plafon(plafon.getJumlah_plafon());
+        }
+
+        usersCustomer.setBranch(branchService.getNearestBranch(
+                detailCustomerRequest.getLatitude_alamat(), detailCustomerRequest.getLongitude_alamat()
+        ));
         usersCustomer.setTempat_tgl_lahir(detailCustomerRequest.getTempat_tgl_lahir());
         usersCustomer.setNo_telp(detailCustomerRequest.getNo_telp());
         usersCustomer.setAlamat(detailCustomerRequest.getAlamat());
@@ -95,9 +113,6 @@ public class CustomerService {
         usersCustomer.setGaji(detailCustomerRequest.getGaji());
         usersCustomer.setNo_rek(detailCustomerRequest.getNo_rek());
         usersCustomer.setStatus_rumah(detailCustomerRequest.getStatus_rumah());
-        Plafon plafon = plafonService.getplafonbycategory("Bronze");
-        usersCustomer.setPlafon(plafon);
-        usersCustomer.setSisa_plafon(plafon.getJumlah_plafon());
 
         return CustomerRepository.save(usersCustomer);
     }
