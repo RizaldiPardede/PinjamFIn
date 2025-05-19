@@ -39,22 +39,26 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         String token = authService.authenticateUser(loginRequest.getUsername(), loginRequest.getPassword());
-
+        ResponseMessage responseMessage = new ResponseMessage();
 
             if (token == null || token.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Terjadi kesalahan saat login");
+                responseMessage.setMessage(token);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseMessage);
             }
 
             if (token.contains("Password tidak cocok")) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(token);
+                responseMessage.setMessage(token);
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseMessage);
             }
 
             if (token.contains("Email belum di verifikasi")) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(token);
+                responseMessage.setMessage(token);
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(responseMessage);
             }
 
             if (token.contains("User dengan email")) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(token);
+                responseMessage.setMessage(token);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseMessage);
             }
 
 
@@ -68,23 +72,27 @@ public class AuthController {
     @PostMapping("/loginWithgoogle")
     public ResponseEntity<?> loginWithgoogle(@RequestBody loginGoogleRequest loginRequest) {
         String token = authService.authenticateWithFirebase(loginRequest.getFirebaseIdToken());
+        ResponseMessage responseMessage = new ResponseMessage();
 
+        if (token == null || token.isEmpty()) {
+            responseMessage.setMessage(token);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseMessage);
+        }
 
-            if (token == null || token.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Terjadi kesalahan saat login");
-            }
+        if (token.contains("Password tidak cocok")) {
+            responseMessage.setMessage(token);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseMessage);
+        }
 
-            if (token.contains("Password tidak cocok")) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(token);
-            }
+        if (token.contains("Email belum di verifikasi")) {
+            responseMessage.setMessage(token);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(responseMessage);
+        }
 
-            if (token.contains("Email belum di verifikasi")) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(token);
-            }
-
-            if (token.contains("User dengan email")) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(token);
-            }
+        if (token.contains("User dengan email")) {
+            responseMessage.setMessage(token);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseMessage);
+        }
 
 
 
@@ -97,22 +105,27 @@ public class AuthController {
                 .orElseThrow(() -> new RuntimeException("Invalid NIP or password")).getUsers();
 
         String token = authService.authenticateUser(users.getEmail(), loginRequest.getPassword());
+        ResponseMessage responseMessage = new ResponseMessage();
 
-            if (token == null || token.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Terjadi kesalahan saat login");
-            }
+        if (token == null || token.isEmpty()) {
+            responseMessage.setMessage(token);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseMessage);
+        }
 
-            if (token.contains("Password tidak cocok")) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(token);
-            }
+        if (token.contains("Password tidak cocok")) {
+            responseMessage.setMessage(token);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseMessage);
+        }
 
-            if (token.contains("Email belum di verifikasi")) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(token);
-            }
+        if (token.contains("Email belum di verifikasi")) {
+            responseMessage.setMessage(token);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(responseMessage);
+        }
 
-            if (token.contains("User dengan email")) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(token);
-            }
+        if (token.contains("User dengan email")) {
+            responseMessage.setMessage(token);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseMessage);
+        }
 
 
         // Ambil fitur dari role yang dimiliki user
