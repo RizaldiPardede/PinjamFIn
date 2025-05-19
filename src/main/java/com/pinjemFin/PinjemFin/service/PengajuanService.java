@@ -2,10 +2,7 @@ package com.pinjemFin.PinjemFin.service;
 
 import com.pinjemFin.PinjemFin.dto.PengajuanCustomerRequest;
 import com.pinjemFin.PinjemFin.dto.SimulasiPengajuanCustomerRequest;
-import com.pinjemFin.PinjemFin.models.Pengajuan;
-import com.pinjemFin.PinjemFin.models.Plafon;
-import com.pinjemFin.PinjemFin.models.UsersEmployee;
-import com.pinjemFin.PinjemFin.models.pengajuan_userEmployee;
+import com.pinjemFin.PinjemFin.models.*;
 import com.pinjemFin.PinjemFin.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -64,6 +61,9 @@ public class PengajuanService {
             assignment.setId_pengajuan(pengajuan);
             assignment.setId_user_employee(usersEmployeeRepository.findById(leastBusyMarketing.get(0).getId_user_employee()).get());
             pengajuanUserEmployeeRepository.save(assignment);
+            UsersCustomer usersCustomer = customerService.getUserCustomer(customerService.getUserCustomerIdFromToken(token));
+            usersCustomer.setSisa_plafon(usersCustomer.getSisa_plafon()-pengajuan.getAmount());
+            customerService.saveCustomer(usersCustomer);
             return pengajuan;
         }
         else {
