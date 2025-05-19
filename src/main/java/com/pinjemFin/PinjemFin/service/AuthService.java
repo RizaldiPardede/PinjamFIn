@@ -79,7 +79,7 @@ public class AuthService {
                 }
             }
             else{
-                return ("Email belum di verifikasi segera cek emailmu untuk aktivasi"+ email);
+                return null;
             }
 
         } else {
