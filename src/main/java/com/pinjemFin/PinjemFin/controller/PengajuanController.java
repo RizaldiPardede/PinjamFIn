@@ -11,6 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/pengajuan")
 public class PengajuanController {
@@ -62,5 +65,14 @@ public class PengajuanController {
         firebaseService.sendNotification(request.getToken(), request.getTitle(), request.getBody());
         return ResponseEntity.ok(responseMessage);
     }
+
+    @GetMapping("/getAllPengajuan")
+    public List<Pengajuan> getAllPengajuan(@RequestHeader("Authorization")  String authHeader) {
+        String token = authHeader.substring(7);
+        UUID id_customer = customerService.getUserCustomerIdFromToken(token);
+        return pengajuanService.getAllPengajuanByCustomerId(id_customer);
+    }
+
+
 
 }

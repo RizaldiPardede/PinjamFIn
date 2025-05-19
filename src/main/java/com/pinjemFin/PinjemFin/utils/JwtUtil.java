@@ -56,6 +56,7 @@ public class JwtUtil {
                     .parseClaimsJws(token.trim())
                     .getBody()
                     .getSubject();
+
         } catch (ExpiredJwtException e) {
             throw new RuntimeException("Token expired at: " + e.getClaims().getExpiration());
         } catch (MalformedJwtException e) {

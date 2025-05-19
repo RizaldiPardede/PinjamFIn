@@ -108,5 +108,9 @@ public class PengajuanService {
 
     }
 
+    public List<Pengajuan> getAllPengajuanByCustomerId(UUID idCustomer) {
+        return pengajuanRepository.findAllByCustomerId(idCustomer);
+    }
+
 
 }
