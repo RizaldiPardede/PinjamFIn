@@ -10,6 +10,7 @@ import com.pinjemFin.PinjemFin.service.PengajuanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -33,6 +34,7 @@ public class CustomerController {
 
     @Autowired
     private AuthService authService;
+
 
     @PostMapping("/CekUpdateAkun")
     public ResponseMessage cekUpdateAkun(@RequestHeader("Authorization") String authHeader) {
@@ -108,6 +110,13 @@ public class CustomerController {
             responseMessage.setMessage("Can Register");
             return ResponseEntity.ok(responseMessage);
         }
+
+    }
+
+    @GetMapping("/getProfile")
+    public ResponseEntity<UsersCustomer> getProfile(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.substring(7);
+        return ResponseEntity.ok(CustomerService.getUserCustomer(CustomerService.getUserCustomerIdFromToken(token)));
 
     }
 
