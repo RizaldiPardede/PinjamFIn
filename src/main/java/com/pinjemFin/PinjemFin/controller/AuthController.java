@@ -40,9 +40,25 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         String token = authService.authenticateUser(loginRequest.getUsername(), loginRequest.getPassword());
 
-        if (token == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
-        }
+
+            if (token == null || token.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Terjadi kesalahan saat login");
+            }
+
+            if (token.contains("Password tidak cocok")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(token);
+            }
+
+            if (token.contains("Email belum di verifikasi")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(token);
+            }
+
+            if (token.contains("User dengan email")) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(token);
+            }
+
+
+
 
         return ResponseEntity.ok(new JwtResponse(token));
     }
@@ -53,9 +69,24 @@ public class AuthController {
     public ResponseEntity<?> loginWithgoogle(@RequestBody loginGoogleRequest loginRequest) {
         String token = authService.authenticateWithFirebase(loginRequest.getFirebaseIdToken());
 
-        if (token == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
-        }
+
+            if (token == null || token.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Terjadi kesalahan saat login");
+            }
+
+            if (token.contains("Password tidak cocok")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(token);
+            }
+
+            if (token.contains("Email belum di verifikasi")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(token);
+            }
+
+            if (token.contains("User dengan email")) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(token);
+            }
+
+
 
         return ResponseEntity.ok(new JwtResponse(token));
     }
@@ -66,9 +97,23 @@ public class AuthController {
                 .orElseThrow(() -> new RuntimeException("Invalid NIP or password")).getUsers();
 
         String token = authService.authenticateUser(users.getEmail(), loginRequest.getPassword());
-        if (token == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid NIP or password");
-        }
+
+            if (token == null || token.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Terjadi kesalahan saat login");
+            }
+
+            if (token.contains("Password tidak cocok")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(token);
+            }
+
+            if (token.contains("Email belum di verifikasi")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(token);
+            }
+
+            if (token.contains("User dengan email")) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(token);
+            }
+
 
         // Ambil fitur dari role yang dimiliki user
         List<String> features = roleFeatureService.getFeatureNamesByRole(users.getRole().getId_role());
