@@ -45,7 +45,7 @@ public class TokenNotifikasiController {
         TokenNotifikasi tokenNotifikasi = tokenNotifikasiService.clearUserCustomerByToken(tokenNotifikasiRequest.getTokenNotifikasi());
 
         if (tokenNotifikasi != null) {
-            responseMessage.setMessage("Token notifikasi added");
+            responseMessage.setMessage("Token notifikasi clear");
         }
 
         else {

@@ -23,12 +23,32 @@ public class TokenNotifikasiService {
     private NotificationService notificationService;
 
     public TokenNotifikasi addToken(String tokenNotif, UUID idCustomer) {
-        TokenNotifikasi tokenNotifikasi = new TokenNotifikasi();
-        tokenNotifikasi.setToken(tokenNotif);
+//        TokenNotifikasi tokenNotifikasi = new TokenNotifikasi();
+//        tokenNotifikasi.setToken(tokenNotif);
+//
+//        if (idCustomer != null) {
+//            customerRepository.findById(idCustomer).ifPresent(tokenNotifikasi::setUsersCustomer);
+//            // Kalau idCustomer tidak ditemukan, usersCustomer tetap null
+//        }
+//
+//        return tokenNotifikasiRepository.save(tokenNotifikasi);
+        // Cek apakah token sudah ada
+        Optional<TokenNotifikasi> existingTokenOpt = tokenNotifikasiRepository.findByToken(tokenNotif);
 
-        if (idCustomer != null) {
-            customerRepository.findById(idCustomer).ifPresent(tokenNotifikasi::setUsersCustomer);
-            // Kalau idCustomer tidak ditemukan, usersCustomer tetap null
+        TokenNotifikasi tokenNotifikasi;
+        if (existingTokenOpt.isPresent()) {
+            // Kalau sudah ada, update usersCustomer jika perlu
+            tokenNotifikasi = existingTokenOpt.get();
+            if (idCustomer != null) {
+                customerRepository.findById(idCustomer).ifPresent(tokenNotifikasi::setUsersCustomer);
+            }
+        } else {
+            // Kalau belum ada, buat baru
+            tokenNotifikasi = new TokenNotifikasi();
+            tokenNotifikasi.setToken(tokenNotif);
+            if (idCustomer != null) {
+                customerRepository.findById(idCustomer).ifPresent(tokenNotifikasi::setUsersCustomer);
+            }
         }
 
         return tokenNotifikasiRepository.save(tokenNotifikasi);
