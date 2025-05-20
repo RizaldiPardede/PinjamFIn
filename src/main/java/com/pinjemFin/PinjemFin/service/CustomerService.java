@@ -46,6 +46,8 @@ public class CustomerService {
     UserCustomerImageService userCustomerImageService;
 
     private final JwtUtil jwtUtil;
+    @Autowired
+    private CustomerRepository customerRepository;
 
     @Autowired
     public CustomerService(JwtUtil jwtUtil) {  // Constructor Injection
@@ -92,29 +94,29 @@ public class CustomerService {
 
 
 //        UsersCustomer usersCustomer = getUserCustomer(getUserCustomerIdFromToken(token));
-        Optional<UsersCustomer> usersCustomer = CustomerRepository.findByUsersIdUser(userId);
+        UsersCustomer usersCustomer = customerRepository.findByUsersIdUser(userId).orElse(null);
         // Kalau baru, set relasi Users
-        if (usersCustomer.isEmpty()) {
-            usersCustomer.get().setUsers(users);
+        if (usersCustomer.getId_user_customer() == null) {
+            usersCustomer.setUsers(users);
             Plafon plafon = plafonService.getplafonbycategory("Bronze");
-            usersCustomer.get().setPlafon(plafon);
-            usersCustomer.get().setSisa_plafon(plafon.getJumlah_plafon());
+            usersCustomer.setPlafon(plafon);
+            usersCustomer.setSisa_plafon(plafon.getJumlah_plafon());
         }
 
-        usersCustomer.get().setBranch(branchService.getNearestBranch(
+        usersCustomer.setBranch(branchService.getNearestBranch(
                 detailCustomerRequest.getLatitude_alamat(), detailCustomerRequest.getLongitude_alamat()
         ));
-        usersCustomer.get().setTempat_tgl_lahir(detailCustomerRequest.getTempat_tgl_lahir());
-        usersCustomer.get().setNo_telp(detailCustomerRequest.getNo_telp());
-        usersCustomer.get().setAlamat(detailCustomerRequest.getAlamat());
-        usersCustomer.get().setNik(detailCustomerRequest.getNik());
-        usersCustomer.get().setNama_ibu_kandung(detailCustomerRequest.getNama_ibu_kandung());
-        usersCustomer.get().setPekerjaan(detailCustomerRequest.getPekerjaan());
-        usersCustomer.get().setGaji(detailCustomerRequest.getGaji());
-        usersCustomer.get().setNo_rek(detailCustomerRequest.getNo_rek());
-        usersCustomer.get().setStatus_rumah(detailCustomerRequest.getStatus_rumah());
+        usersCustomer.setTempat_tgl_lahir(detailCustomerRequest.getTempat_tgl_lahir());
+        usersCustomer.setNo_telp(detailCustomerRequest.getNo_telp());
+        usersCustomer.setAlamat(detailCustomerRequest.getAlamat());
+        usersCustomer.setNik(detailCustomerRequest.getNik());
+        usersCustomer.setNama_ibu_kandung(detailCustomerRequest.getNama_ibu_kandung());
+        usersCustomer.setPekerjaan(detailCustomerRequest.getPekerjaan());
+        usersCustomer.setGaji(detailCustomerRequest.getGaji());
+        usersCustomer.setNo_rek(detailCustomerRequest.getNo_rek());
+        usersCustomer.setStatus_rumah(detailCustomerRequest.getStatus_rumah());
 
-        return CustomerRepository.save(usersCustomer.get());
+        return CustomerRepository.save(usersCustomer);
     }
 
     public UsersCustomer saveCustomer(UsersCustomer usersCustomer) {
