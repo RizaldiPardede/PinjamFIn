@@ -91,8 +91,8 @@ public class CustomerService {
         // Cari dulu apakah user ini sudah punya customer
 
 
-        UsersCustomer usersCustomer = getUserCustomer(getUserCustomerIdFromToken(token));
-
+//        UsersCustomer usersCustomer = getUserCustomer(getUserCustomerIdFromToken(token));
+        UsersCustomer usersCustomer = CustomerRepository.findByUsersIdUser(userId).get();
         // Kalau baru, set relasi Users
         if (usersCustomer.getId_user_customer() == null) {
             usersCustomer.setUsers(users);
