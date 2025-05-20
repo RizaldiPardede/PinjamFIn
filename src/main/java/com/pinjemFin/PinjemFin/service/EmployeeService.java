@@ -46,7 +46,15 @@ public class EmployeeService {
     @Autowired
     CustomerService customerService;
 
+    @Autowired
+    TokenNotifikasiRepository tokenNotifikasiRepository;
+
+    @Autowired
+    TokenNotifikasiRepository tokenRepository;
+
     private final JwtUtil jwtUtil;
+    @Autowired
+    private TokenNotifikasiService tokenNotifikasiService;
 
     public EmployeeService(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
@@ -185,6 +193,7 @@ public class EmployeeService {
         pengajuan_userEmployee.setId_pengajuan(recomendfromMarketing);
 
         pengajuanRepository.updateStatusById(recomendfromMarketing.getId_pengajuan(),"bckt_BranchManager");
+
         return pengajuanEmployeeRepository.save(pengajuan_userEmployee);
     }
 
@@ -205,6 +214,8 @@ public class EmployeeService {
         pengajuan_userEmployee.setId_pengajuan(recomendfromMarketing);
 
         pengajuanRepository.updateStatusById(recomendfromMarketing.getId_pengajuan(),"bckt_Operation");
+        List<TokenNotifikasi>  tokenNotifikasis = tokenRepository.findTokensByCustomerId(pengajuan_userEmployee.getId_pengajuan().getId_user_customer().getId_user_customer());
+        tokenNotifikasiService.sendNotificationToTokens(tokenNotifikasis,"Halo Ada info nih","Pengajuan Anda Rp."+pengajuan.get().getAmount()+" Telah Di Approve");
         return pengajuanEmployeeRepository.save(pengajuan_userEmployee);
     }
 
@@ -215,7 +226,8 @@ public class EmployeeService {
         usersCustomer.setSisa_plafon(usersCustomer.getSisa_plafon()-ApprovetoDisburse.getTotal_payment());
         customerService.saveCustomer(usersCustomer);
         pengajuanRepository.updateStatusById(ApprovetoDisburse.getId_pengajuan(),"Disbursment");
-
+        List<TokenNotifikasi>  tokenNotifikasis = tokenRepository.findTokensByCustomerId(usersCustomer.getId_user_customer());
+        tokenNotifikasiService.sendNotificationToTokens(tokenNotifikasis,"Halo Segera Cek Saldo Anda","Pengajuan Anda Rp."+pengajuan.get().getAmount()+" Telah Di Disburse");
         return ApprovetoDisburse;
     }
 
