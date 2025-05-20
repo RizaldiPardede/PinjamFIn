@@ -96,7 +96,8 @@ public class CustomerService {
 //        UsersCustomer usersCustomer = getUserCustomer(getUserCustomerIdFromToken(token));
         UsersCustomer usersCustomer = customerRepository.findByUsersIdUser(userId).orElse(null);
         // Kalau baru, set relasi Users
-        if (usersCustomer.getId_user_customer() == null) {
+        if (usersCustomer == null) {
+            usersCustomer = new UsersCustomer();
             usersCustomer.setUsers(users);
             Plafon plafon = plafonService.getplafonbycategory("Bronze");
             usersCustomer.setPlafon(plafon);
