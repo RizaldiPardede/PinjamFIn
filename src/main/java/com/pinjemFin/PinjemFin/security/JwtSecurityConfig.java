@@ -38,7 +38,7 @@
                             .requestMatchers("/customer/cekEmailCustomer").permitAll()
                             .requestMatchers("/auth/loginWithgoogle").permitAll()
                             .requestMatchers("/auth/emailActivation").permitAll()
-                            .requestMatchers("/auth//registerAuthGoogle").permitAll()// baru
+                            .requestMatchers("/auth/registerAuthGoogle").permitAll()// baru
                             .anyRequest().authenticated()  // Endpoint lain harus pakai token
                     )
                     .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
