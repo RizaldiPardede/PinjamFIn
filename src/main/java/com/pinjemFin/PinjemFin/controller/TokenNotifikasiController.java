@@ -9,10 +9,7 @@ import com.pinjemFin.PinjemFin.service.CustomerService;
 import com.pinjemFin.PinjemFin.service.TokenNotifikasiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
@@ -26,7 +23,7 @@ public class TokenNotifikasiController {
 
     @PostMapping("/addTokenNotifikasi")
     public ResponseEntity<ResponseMessage> addToken(@RequestHeader("Authorization")String autheader
-            , TokenNotifikasiRequest tokenNotifikasiRequest) {
+            , @RequestBody TokenNotifikasiRequest tokenNotifikasiRequest) {
         ResponseMessage responseMessage = new ResponseMessage();
         UUID idusersCustomer = customerService.getUserCustomerIdFromToken(autheader.substring(7));
         TokenNotifikasi tokenNotifikasi = tokenNotifikasiService.addToken(tokenNotifikasiRequest.getTokenNotifikasi(),idusersCustomer);
@@ -43,7 +40,7 @@ public class TokenNotifikasiController {
 
     @PostMapping("/clearUserCustomerNotifikasi")
     public ResponseEntity<ResponseMessage> clearCustomerFromToken(@RequestHeader("Authorization")String autheader
-            , TokenNotifikasiRequest tokenNotifikasiRequest) {
+            ,@RequestBody TokenNotifikasiRequest tokenNotifikasiRequest) {
         ResponseMessage responseMessage = new ResponseMessage();
         TokenNotifikasi tokenNotifikasi = tokenNotifikasiService.clearUserCustomerByToken(tokenNotifikasiRequest.getTokenNotifikasi());
 
