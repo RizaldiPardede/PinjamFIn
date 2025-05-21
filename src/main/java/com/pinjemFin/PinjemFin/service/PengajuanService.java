@@ -45,10 +45,20 @@ public class PengajuanService {
         pengajuan.setBunga(hitungPengajuanCustomerRequest.getBunga());
         pengajuan.setTotal_payment(hitungPengajuanCustomerRequest.getTotal_payment());
         pengajuan.setId_user_customer(customerService.getUserCustomer(customerService.getUserCustomerIdFromToken(token)));
-        // 1. Simpan pengajuan baru
-        pengajuanRepository.save(pengajuan);
 
-        // 2. Cari marketing dengan pengajuan paling sedikit di branch yang sama
+        List<String> statusPending = List.of("bckt_marketing", "bckt_BranchManager", "bckt_Operation");
+        boolean hasPending = pengajuanRepository.existsByUserAndStatusIn(pengajuan.getId_user_customer(), statusPending);
+
+        if (hasPending) {
+            throw new RuntimeException("Masih ada pengajuan yang belum selesai direview.");
+        }
+        else {
+            //Simpan pengajuan baru
+            pengajuanRepository.save(pengajuan);
+
+        }
+
+        //Cari marketing dengan pengajuan paling sedikit di branch yang sama
         Pageable pageable = (Pageable) PageRequest.of(0, 1);
         List<UsersEmployee> leastBusyMarketing = pengajuanUserEmployeeRepository.findAvailableMarketing(
                 pengajuan.getId_user_customer().getBranch().getId_branch(), pageable);
@@ -56,7 +66,7 @@ public class PengajuanService {
         if (!leastBusyMarketing.isEmpty()) {
 
 
-            // 3. Buat entri di tabel pengajuan_user_employee
+            //Buat entri di tabel pengajuan_user_employee
             pengajuan_userEmployee assignment = new pengajuan_userEmployee();
             assignment.setId_pengajuan(pengajuan);
             assignment.setId_user_employee(usersEmployeeRepository.findById(leastBusyMarketing.get(0).getId_user_employee()).get());

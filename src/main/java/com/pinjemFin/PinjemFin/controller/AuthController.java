@@ -214,4 +214,18 @@ public class AuthController {
         responseMessage.setMessage(accountActivationService.ActivationEmail(tokenActivationRequest.getTokenActivation()));
         return ResponseEntity.ok(responseMessage);
     }
+
+    @PostMapping("/getUser")
+    public ResponseEntity<?> getUser(@RequestHeader("Authorization") String autheader) {
+        Users user = authService.getuser(autheader);
+        return ResponseEntity.ok(user);
+
+    }
+    @PostMapping("/updatePassword")
+    public ResponseEntity<?> updagePassword(@RequestHeader("Authorization") String autheader
+            ,@RequestBody UpdatePasswordUserRequest request) {
+        ResponseMessage responseMessage = new ResponseMessage();
+        responseMessage.setMessage(authService.updatePassword(autheader,request.getOldPassword(),request.getNewPassword()));
+        return ResponseEntity.ok(responseMessage);
+    }
 }

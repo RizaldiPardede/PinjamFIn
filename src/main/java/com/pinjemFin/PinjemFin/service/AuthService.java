@@ -13,6 +13,8 @@ import com.pinjemFin.PinjemFin.utils.CustomException;
 import com.pinjemFin.PinjemFin.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -165,6 +167,34 @@ public class AuthService {
         } catch (FirebaseAuthException e) {
             logger.error("Firebase token tidak valid: {}", e.getMessage());
             throw new RuntimeException("Token Firebase tidak valid");
+        }
+    }
+
+    public Users getuser(String autheader) {
+        String idUser = jwtUtil.extractidUser(autheader.substring(7));
+        return usersRepository.findById(UUID.fromString(idUser)).orElse(null);
+    }
+    public String updatePassword(String autheader, String oldPassword, String newPassword) {
+        String idUser = jwtUtil.extractidUser(autheader.substring(7));
+        Users users = usersRepository.findById(UUID.fromString(idUser)).orElse(null);
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        if (users == null) {
+            throw new RuntimeException("User belum terdaftar di sistem");
+        }
+        else{
+            String AuthResult = authenticateUser(users.getEmail(),oldPassword);
+
+            try {
+                String resultcekPassword = jwtUtil.extractidUser(AuthResult);
+                if (resultcekPassword.equals(idUser)) {
+                    users.setPassword(passwordEncoder.encode(newPassword));
+                    usersRepository.save(users);
+                }
+
+                return "Password berhasil diubah";
+            } catch (RuntimeException e) {
+                throw new RuntimeException("Token error: " + e.getMessage());
+            }
         }
     }
 }

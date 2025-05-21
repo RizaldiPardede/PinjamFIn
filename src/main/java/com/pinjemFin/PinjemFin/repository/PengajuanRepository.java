@@ -2,6 +2,7 @@ package com.pinjemFin.PinjemFin.repository;
 
 
 import com.pinjemFin.PinjemFin.models.Pengajuan;
+import com.pinjemFin.PinjemFin.models.UsersCustomer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -23,4 +24,7 @@ public interface PengajuanRepository extends JpaRepository<Pengajuan, UUID> {
     @Query("SELECT p FROM Pengajuan p WHERE p.id_user_customer.id_user_customer = :idCustomer")
     List<Pengajuan> findAllByCustomerId(@Param("idCustomer") UUID idCustomer);
 
+
+    @Query("SELECT COUNT(p) > 0 FROM Pengajuan p WHERE p.id_user_customer = :user AND p.status IN :statuses")
+    boolean existsByUserAndStatusIn(@Param("user") UsersCustomer user, @Param("statuses") List<String> statuses);
 }
