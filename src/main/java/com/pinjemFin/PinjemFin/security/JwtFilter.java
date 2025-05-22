@@ -53,6 +53,7 @@ public class JwtFilter extends GenericFilterBean {
                 ||requestURI.startsWith("/api/auth/loginWithgoogle")
                 ||requestURI.startsWith("/api/auth/emailActivation")
                 ||requestURI.startsWith("/api/auth/registerAuthGoogle")
+                ||requestURI.startsWith("/api/auth/forgot-password")
 
         ) {
 

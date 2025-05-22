@@ -221,6 +221,7 @@ public class AuthController {
         return ResponseEntity.ok(user);
 
     }
+
     @PostMapping("/updatePassword")
     public ResponseEntity<?> updagePassword(@RequestHeader("Authorization") String autheader
             ,@RequestBody UpdatePasswordUserRequest request) {
