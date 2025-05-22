@@ -19,5 +19,10 @@ public class PlafonService {
     public Plafon getplafonbycategory(String jenis_plafon) {
         return plafonRepository.findPlafonByJenis_plafon(jenis_plafon).get();
     }
+    public List<Plafon> getAllPlafon() {
+        return plafonRepository.findAllSorted();
+    }
+
+
 
 }

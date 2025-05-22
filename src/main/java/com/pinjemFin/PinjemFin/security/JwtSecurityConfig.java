@@ -40,6 +40,7 @@
                             .requestMatchers("/auth/emailActivation").permitAll()
                             .requestMatchers("/auth/registerAuthGoogle").permitAll()
                             .requestMatchers("/auth/forgot-password").permitAll()
+                            .requestMatchers("/plafon/getAllPlafon").permitAll()
                             .anyRequest().authenticated()  // Endpoint lain harus pakai token
                     )
                     .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
