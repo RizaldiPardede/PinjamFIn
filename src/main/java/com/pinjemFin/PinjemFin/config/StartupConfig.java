@@ -2,14 +2,20 @@ package com.pinjemFin.PinjemFin.config;
 
 import com.pinjemFin.PinjemFin.models.Plafon;
 import com.pinjemFin.PinjemFin.models.Role;
+import com.pinjemFin.PinjemFin.models.Users;
+import com.pinjemFin.PinjemFin.models.UsersEmployee;
+import com.pinjemFin.PinjemFin.repository.EmployeeRepository;
 import com.pinjemFin.PinjemFin.repository.PlafonRepository;
 import com.pinjemFin.PinjemFin.repository.RoleRepository;
+import com.pinjemFin.PinjemFin.repository.UsersRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -63,6 +69,49 @@ public class StartupConfig {
                 System.out.println("Inserted default plafon data.");
             } else {
                 System.out.println("Plafon data already exists.");
+            }
+        };
+    }
+
+    @Bean
+    CommandLineRunner initSuperAdmin(UsersRepository usersRepository,
+                                     RoleRepository roleRepository,
+                                     EmployeeRepository employeeRepository) {
+        return args -> {
+            String email = "superadmin@pinjemfin.com";
+            Optional<Users> existing = usersRepository.findByEmail(email);
+
+            if (existing.isEmpty()) {
+                // Buat akun super admin
+                BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+                String rawPassword = UUID.randomUUID().toString().substring(0, 8);
+                String hashedPassword = encoder.encode(rawPassword);
+
+                Role superAdminRole = roleRepository.findByNamaRole("super admin");
+
+                Users superAdmin = new Users();
+                superAdmin.setEmail(email);
+                superAdmin.setPassword(hashedPassword);
+                superAdmin.setNama("Super Admin");
+                superAdmin.setIsActive(true);
+                superAdmin.setRole(superAdminRole);
+
+                Users saved = usersRepository.save(superAdmin);
+
+                // Jika super admin juga butuh UsersEmployee:
+                UsersEmployee employee = new UsersEmployee();
+                employee.setNip(999999); // Atur NIP default
+                employee.setJabatan("super admin");
+                employee.setUsers(saved);
+                employee.setBranch(null); // Atau isi jika ada branch default
+
+                employeeRepository.save(employee);
+
+                System.out.println("✅ Super Admin berhasil dibuat:");
+                System.out.println("Email: " + email);
+                System.out.println("Password: " + rawPassword);
+            } else {
+                System.out.println("Super Admin sudah ada: " + email);
             }
         };
     }
