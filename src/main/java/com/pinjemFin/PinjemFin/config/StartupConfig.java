@@ -141,7 +141,8 @@ public class StartupConfig {
                         "feature_deleteRole",
                         "feature_createRole",
                         "feature_attachRoleFeature",
-                        "feature_getFeaturefromRole"
+                        "feature_getFeaturefromRole",
+                        "feature_getAllRole"
                 );
 
                 // ✅ Simpan fitur jika belum ada
