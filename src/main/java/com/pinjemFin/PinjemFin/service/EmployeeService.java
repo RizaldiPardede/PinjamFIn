@@ -1,9 +1,6 @@
 package com.pinjemFin.PinjemFin.service;
 
-import com.pinjemFin.PinjemFin.dto.NipnameRequest;
-import com.pinjemFin.PinjemFin.dto.UpdatePasswordEmployeeRequest;
-import com.pinjemFin.PinjemFin.dto.UpdateProfileEmployeeRequest;
-import com.pinjemFin.PinjemFin.dto.UserEmployeUsersRequest;
+import com.pinjemFin.PinjemFin.dto.*;
 import com.pinjemFin.PinjemFin.models.*;
 import com.pinjemFin.PinjemFin.repository.*;
 import com.pinjemFin.PinjemFin.utils.JwtUtil;
@@ -106,6 +103,24 @@ public class EmployeeService {
         user.setPassword(encoder.encode(request.getNewPassword()));
 
         usersRepository.save(user);
+    }
+
+    @Transactional
+    public void ubahPassword( UpdatePasswordUserRequest request, String token) {
+        UsersEmployee usersEmployee = getEmployeeProfileFromToken(token);
+
+        Users user = usersEmployee.getUsers();
+
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        if (!encoder.matches(request.getOldPassword(), user.getPassword())) {
+            throw new RuntimeException("Old password doesn't match");
+        }
+        else {
+            user.setPassword(encoder.encode(request.getNewPassword()));
+            user.setIsActive(true);
+            usersRepository.save(user);
+        }
+
     }
 
     @Transactional

@@ -144,6 +144,21 @@ public class EmployeeController {
         }
     }
 
+    @PostMapping("/ubahPassword")
+    public ResponseEntity<?> ubahpassword(@RequestHeader("Authorization") String authHeader,@RequestBody UpdatePasswordUserRequest request) {
+        String token = authHeader.substring(7);
+        ResponseMessage responseMessage = new ResponseMessage();
+        try {
+            employeeService.ubahPassword(request,token);
+
+            responseMessage.setMessage("Successfully updated password");
+            return ResponseEntity.ok(responseMessage);
+        } catch (RuntimeException e) {
+            responseMessage.setMessage(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseMessage);
+        }
+    }
+
 
 
 }
