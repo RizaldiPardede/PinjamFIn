@@ -37,11 +37,10 @@ public class CustomerController {
 
 
     @PostMapping("/CekUpdateAkun")
-    public ResponseMessage cekUpdateAkun(@RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<ResponseMessage> cekUpdateAkun(@RequestHeader("Authorization") String authHeader) {
         String token = authHeader.substring(7);
-        ResponseMessage responseMessage = new ResponseMessage();
-        responseMessage.setMessage(CustomerService.cekUpdateAkun(token).getBody());
-        return responseMessage;
+        return CustomerService.cekUpdateAkun(token);
+
     }
 
     @PostMapping("/AddDetailAkun")

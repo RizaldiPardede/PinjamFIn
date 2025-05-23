@@ -2,6 +2,7 @@ package com.pinjemFin.PinjemFin.service;
 
 import com.pinjemFin.PinjemFin.dto.DetailCustomerRequest;
 import com.pinjemFin.PinjemFin.dto.InformasiPengajuanResponse;
+import com.pinjemFin.PinjemFin.dto.ResponseMessage;
 import com.pinjemFin.PinjemFin.models.Plafon;
 import com.pinjemFin.PinjemFin.models.Users;
 import com.pinjemFin.PinjemFin.models.UsersCustomer;
@@ -57,32 +58,28 @@ public class CustomerService {
 
 
     @Transactional
-    public ResponseEntity<String> cekUpdateAkun(String token) {
+    public ResponseEntity<ResponseMessage> cekUpdateAkun(String token) {
         UUID id_user = UUID.fromString(jwtUtil.extractidUser(token));
         Optional<UsersCustomer> usersCustomerOptional = CustomerRepository.findByUsersIdUser(id_user);
-        if (userCustomerImageService.hasAllRequiredImages(usersCustomerOptional.get().getId_user_customer())){
-            if (usersCustomerOptional.isPresent()) {
-                return ResponseEntity.ok("Sudah Melengkapi");
+
+        ResponseMessage responseMessage = new ResponseMessage();
+
+        if (usersCustomerOptional.isPresent()) {
+            if (userCustomerImageService.hasAllRequiredImages(usersCustomerOptional.get().getId_user_customer())) {
+                responseMessage.setMessage("Sudah Melengkapi");
+                return ResponseEntity.ok(responseMessage);
+            } else {
+                List<String> missingImages = userCustomerImageService.getMissingImages(usersCustomerOptional.get().getId_user_customer());
+                String formattedList = missingImages.stream()
+                        .map(name -> name.replace("_", " "))
+                        .collect(Collectors.joining(", "));
+                responseMessage.setMessage("Anda belum upload " + formattedList);
+                return ResponseEntity.status(404).body(responseMessage);
             }
-            else {
-                return ResponseEntity
-                        .status(404) // HTTP 404 Not Found
-                        .body("{\"response\":\"Silakan update akun terlebih dahulu\"}");
-            }
+        } else {
+            responseMessage.setMessage("Silakan update akun terlebih dahulu");
+            return ResponseEntity.status(404).body(responseMessage);
         }
-        else {
-            List<String> missingImages = userCustomerImageService.getMissingImages(usersCustomerOptional.get().getId_user_customer());
-            String formattedList = missingImages.stream()
-                    .map(name -> name.replace("_", " "))  // ubah underscore jadi spasi
-                    .collect(Collectors.joining(", "));
-
-            String message = "Anda belum upload " + formattedList;
-            return ResponseEntity
-                    .status(404) // HTTP 404 Not Found
-                    .body(message);
-        }
-
-
     }
 
     public UsersCustomer addCustomer(DetailCustomerRequest detailCustomerRequest, String token) {
