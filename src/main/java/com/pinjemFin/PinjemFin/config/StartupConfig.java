@@ -1,20 +1,17 @@
 package com.pinjemFin.PinjemFin.config;
 
-import com.pinjemFin.PinjemFin.models.Plafon;
-import com.pinjemFin.PinjemFin.models.Role;
-import com.pinjemFin.PinjemFin.models.Users;
-import com.pinjemFin.PinjemFin.models.UsersEmployee;
-import com.pinjemFin.PinjemFin.repository.EmployeeRepository;
-import com.pinjemFin.PinjemFin.repository.PlafonRepository;
-import com.pinjemFin.PinjemFin.repository.RoleRepository;
-import com.pinjemFin.PinjemFin.repository.UsersRepository;
+import com.pinjemFin.PinjemFin.dto.RoleFeatureRequest;
+import com.pinjemFin.PinjemFin.models.*;
+import com.pinjemFin.PinjemFin.repository.*;
 import com.pinjemFin.PinjemFin.service.EmailService;
+import com.pinjemFin.PinjemFin.service.RoleFeatureService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -116,6 +113,70 @@ public class StartupConfig {
             }
         };
     }
+
+
+        @Bean
+        CommandLineRunner initFeaturesAndAssignToSuperAdmin(
+                FeatureRepository featureRepository,
+                RoleRepository roleRepository,
+                RoleFeatureService roleFeatureService) {
+
+            return args -> {
+                // ✅ Semua nama fitur
+                List<String> allFeatures = List.of(
+                        "feature_getPengajuanMarketing",
+                        "feature_recomendMarketing",
+                        "feature_getPengajuanBM",
+                        "feature_approveBM",
+                        "feature_getPengajuanBackOffice",
+                        "feature_disburse",
+                        "feature_setTablePeminjaman",
+                        "feature_getAllCabang",
+                        "feature_updateCabang",
+                        "feature_createCabang",
+                        "feature_getAllEmployee",
+                        "feature_createEmployee",
+                        "feature_forgotPassword",
+                        "feature_getAllFeature",
+                        "feature_deleteRole",
+                        "feature_createRole",
+                        "feature_attachRoleFeature",
+                        "feature_getFeaturefromRole"
+                );
+
+                // ✅ Simpan fitur jika belum ada
+                List<UUID> featureIds = new ArrayList<>();
+                for (String featureName : allFeatures) {
+                    Feature existing = featureRepository.findByFeatureName(featureName);
+                    if (existing == null) {
+                        Feature newFeature = new Feature();
+                        newFeature.setFeature_name(featureName);
+                        Feature saved = featureRepository.save(newFeature);
+                        featureIds.add(saved.getId_feature());
+                        System.out.println("Inserted feature: " + featureName);
+                    } else {
+                        featureIds.add(existing.getId_feature());
+                        System.out.println("Feature already exists: " + featureName);
+                    }
+                }
+
+                // ✅ Ambil role super admin
+                Role superAdmin = roleRepository.findByNamaRole("super admin");
+                if (superAdmin != null) {
+                    // Buat RoleFeatureRequest
+                    RoleFeatureRequest request = new RoleFeatureRequest();
+                    request.setId_role(superAdmin.getId_role());
+                    request.setFeatureIds(featureIds);
+
+                    // Panggil service untuk attach
+                    roleFeatureService.attachFeature(request);
+                    System.out.println("Assigned all features to Super Admin.");
+                } else {
+                    System.out.println("Super Admin role not found.");
+                }
+            };
+        }
+
 
 
 }

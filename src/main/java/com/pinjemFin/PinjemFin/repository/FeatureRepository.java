@@ -10,4 +10,6 @@ import java.util.UUID;
 @Repository
 public interface FeatureRepository extends JpaRepository<Feature, UUID> {
     List<Feature> findAll();
+
+    Feature findByFeatureName(String featureName);
 }
