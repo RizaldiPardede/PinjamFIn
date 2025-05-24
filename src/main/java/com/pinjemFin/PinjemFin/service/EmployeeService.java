@@ -213,11 +213,13 @@ public class EmployeeService {
         Marketingnote.setId_user_employee(marketing);
         Marketingnote.setId_pengajuan(recomendfromMarketing);
         Marketingnote.setNote(note);
+        Marketingnote.setId_pengajuan_userEmployee(pengajuanEmployeeRepository.findByUserEmployeeAndPengajuan(marketingid,recomendfromMarketing.getId_pengajuan())
+                .orElseThrow().getId_pengajuan_userEmployee());
         pengajuanEmployeeRepository.save(Marketingnote);
         return pengajuanEmployeeRepository.save(pengajuan_userEmployee);
     }
 
-    public pengajuan_userEmployee approveBranchManager(String token, UUID pengajuanId) {
+    public pengajuan_userEmployee approveBranchManager(String token, UUID pengajuanId,String note) {
         UUID branchmanagerid = getUserEmployeeIdFromToken(token);
         UsersEmployee branchmanager = employeeRepository.findById(branchmanagerid)
                 .orElseThrow(() -> new RuntimeException("branchmanager not found"));
@@ -226,16 +228,24 @@ public class EmployeeService {
                 .orElseThrow(() -> new RuntimeException("backoffice not found"));
 
         Optional<Pengajuan> pengajuan = pengajuanRepository.findById(pengajuanId);
-        Pengajuan recomendfromMarketing = pengajuan
+        Pengajuan ApprovefromBM = pengajuan
                 .orElseThrow(() -> new RuntimeException("Pengajuan not found"));
 
         pengajuan_userEmployee pengajuan_userEmployee = new pengajuan_userEmployee();
         pengajuan_userEmployee.setId_user_employee(backoffice);
-        pengajuan_userEmployee.setId_pengajuan(recomendfromMarketing);
+        pengajuan_userEmployee.setId_pengajuan(ApprovefromBM);
 
-        pengajuanRepository.updateStatusById(recomendfromMarketing.getId_pengajuan(),"bckt_Operation");
+        pengajuanRepository.updateStatusById(ApprovefromBM.getId_pengajuan(),"bckt_Operation");
         List<TokenNotifikasi>  tokenNotifikasis = tokenRepository.findTokensByCustomerId(pengajuan_userEmployee.getId_pengajuan().getId_user_customer().getId_user_customer());
         tokenNotifikasiService.sendNotificationToTokens(tokenNotifikasis,"Halo Ada info nih","Pengajuan Anda Rp."+pengajuan.get().getAmount()+" Telah Di Approve");
+
+        pengajuan_userEmployee BMnote = new pengajuan_userEmployee();
+        BMnote.setId_user_employee(branchmanager);
+        BMnote.setId_pengajuan(ApprovefromBM);
+        BMnote.setNote(note);
+        BMnote.setId_pengajuan_userEmployee(pengajuanEmployeeRepository.findByUserEmployeeAndPengajuan(branchmanagerid,ApprovefromBM.getId_pengajuan())
+                .orElseThrow().getId_pengajuan_userEmployee());
+        pengajuanEmployeeRepository.save(BMnote);
         return pengajuanEmployeeRepository.save(pengajuan_userEmployee);
     }
 

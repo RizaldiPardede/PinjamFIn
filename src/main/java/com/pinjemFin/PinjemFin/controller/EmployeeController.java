@@ -91,7 +91,7 @@ public class EmployeeController {
     public pengajuan_userEmployee approveBranchManager(@RequestHeader("Authorization") String authHeader
             ,@RequestBody PengajuanRequest pengajuanRequest) {
         String token = authHeader.substring(7);
-        return employeeService.approveBranchManager(token,pengajuanRequest.getId_pengajuan());
+        return employeeService.approveBranchManager(token,pengajuanRequest.getId_pengajuan(),pengajuanRequest.getNote());
     }
 
     @PostMapping("/disbursement")

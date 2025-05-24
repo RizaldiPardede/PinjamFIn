@@ -74,6 +74,7 @@ public class PengajuanEmployeeService {
             NoteResponse noteResponse = new NoteResponse();
             noteResponse.setNama(pue.getId_user_employee().getUsers().getNama());
             noteResponse.setNama_role(pue.getId_user_employee().getUsers().getRole().getNama_role());
+
             noteResponse.setStatus(pue.getId_pengajuan().getStatus());
             noteResponse.setNote(pue.getNote());
 

@@ -67,4 +67,10 @@ public interface PengajuanEmployeeRepository extends JpaRepository<pengajuan_use
     @Query("SELECT pue FROM pengajuan_userEmployee pue " +
             "WHERE pue.id_pengajuan.id_pengajuan = :idPengajuan")
     List<pengajuan_userEmployee> findByIdPengajuan(@Param("idPengajuan") UUID id_pengajuan);
+
+
+    @Query("SELECT pue FROM pengajuan_userEmployee pue " +
+            "WHERE pue.id_user_employee.id_user_employee = :idUserEmployee " +
+            "AND pue.id_pengajuan.id_pengajuan = :idPengajuan")
+    Optional<pengajuan_userEmployee> findByUserEmployeeAndPengajuan(@Param("idUserEmployee") UUID idUserEmployee, @Param("idPengajuan") UUID idPengajuan);
 }
