@@ -23,6 +23,10 @@ public class PlafonService {
         return plafonRepository.findAllSorted();
     }
 
+    public Plafon createPlafon(Plafon plafon) {
+        return plafonRepository.save(plafon);
+    }
+
 
 
 }
