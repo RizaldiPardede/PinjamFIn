@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.meta.When;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -33,8 +34,18 @@ public class PlafonService {
     public Plafon deletePlafon(UUID idplafon) {
         Optional<Plafon> plafon = plafonRepository.findById(idplafon);
         if (plafon.isPresent()) {
-            plafonRepository.deleteById(idplafon);
-            return plafon.get();
+            Plafon plafonopt = plafon.get();
+
+            switch (plafonopt.getJenis_plafon().toLowerCase()) {
+                case "bronze":
+                case "silver":
+                case "gold":
+                case "platinum":
+                    throw new IllegalArgumentException("Plafon default '" + plafonopt.getJenis_plafon() + "' tidak dapat dihapus");
+                default:
+                    plafonRepository.deleteById(idplafon);
+                    return plafonopt;
+            }
         } else {
             throw new EntityNotFoundException("Plafon tidak ditemukan");
         }
