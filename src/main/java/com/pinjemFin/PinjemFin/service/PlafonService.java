@@ -5,11 +5,14 @@ import com.pinjemFin.PinjemFin.models.Pinjaman;
 import com.pinjemFin.PinjemFin.models.Plafon;
 import com.pinjemFin.PinjemFin.models.UsersCustomer;
 import com.pinjemFin.PinjemFin.repository.PlafonRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class PlafonService {
@@ -25,6 +28,29 @@ public class PlafonService {
 
     public Plafon createPlafon(Plafon plafon) {
         return plafonRepository.save(plafon);
+    }
+
+    public Plafon deletePlafon(UUID idplafon) {
+        Optional<Plafon> plafon = plafonRepository.findById(idplafon);
+        if (plafon.isPresent()) {
+            plafonRepository.deleteById(idplafon);
+            return plafon.get();
+        } else {
+            throw new EntityNotFoundException("Plafon tidak ditemukan");
+        }
+    }
+
+    public Plafon updatePlafon(UUID id, Plafon updatedPlafon) {
+        Plafon existingPlafon = plafonRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Plafon tidak ditemukan dengan id: " + id));
+
+        existingPlafon.setJenis_plafon(updatedPlafon.getJenis_plafon());
+        existingPlafon.setJumlah_plafon(updatedPlafon.getJumlah_plafon());
+        existingPlafon.setBunga(updatedPlafon.getBunga());
+
+        // tambahkan field lain jika ada
+
+        return plafonRepository.save(existingPlafon);
     }
 
 
