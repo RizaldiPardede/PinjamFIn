@@ -206,4 +206,8 @@ public class CustomerService {
 
 
     }
+
+    public List<UsersCustomer> getAllCustomer() {
+        return customerRepository.findAll();
+    }
 }

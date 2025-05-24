@@ -159,6 +159,18 @@ public class EmployeeController {
         }
     }
 
+    @GetMapping("/getAllCustomer")
+    public ResponseEntity<?> getAllCustomer() {
+        try {
+
+            return ResponseEntity.ok(employeeService.getallcustomer());
+        } catch (RuntimeException e) {
+            ResponseMessage responseMessage = new ResponseMessage();
+            responseMessage.setMessage(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseMessage);
+        }
+    }
+
 
 
 }

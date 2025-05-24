@@ -248,7 +248,9 @@ public class EmployeeService {
 
 
 
-
+    public List<UsersCustomer> getallcustomer(){
+        return customerService.getAllCustomer();
+    }
 
 
 
