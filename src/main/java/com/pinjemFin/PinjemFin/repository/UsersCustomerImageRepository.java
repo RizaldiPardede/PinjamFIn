@@ -18,4 +18,7 @@ public interface UsersCustomerImageRepository extends JpaRepository<UserCustomer
 
     @Query("SELECT i.imageType FROM UserCustomerImage i WHERE i.userCustomer.id_user_customer = :userCustomerId")
     List<String> findImageTypesByUserCustomerId(UUID userCustomerId);
+
+    @Query("SELECT i FROM UserCustomerImage i WHERE i.userCustomer.id_user_customer = :idCustomer")
+    List<UserCustomerImage> findAllImageCustomer(@Param("idCustomer") UUID idCustomer);
 }

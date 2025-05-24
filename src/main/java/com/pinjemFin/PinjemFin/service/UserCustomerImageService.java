@@ -73,6 +73,12 @@ public class UserCustomerImageService {
         return userCustomerImage.getImageUrl();
     }
 
+    public List<UserCustomerImage> getAllImageCustomer(UUID idcustomer) throws Exception {
+        return usersCustomerImageRepository.findAllImageCustomer(idcustomer);
+    }
+
+
+
     public boolean hasAllRequiredImages(UUID userCustomerId) {
         List<String> uploaded = usersCustomerImageRepository.findImageTypesByUserCustomerId(userCustomerId);
         return uploaded.containsAll(requiredImageTypes);
