@@ -26,4 +26,7 @@ public class pengajuan_userEmployee {
     @ManyToOne
     @JoinColumn(name="id_pengajuan")
     private Pengajuan id_pengajuan;
+
+    @Column(nullable = true)
+    private String note;
 }

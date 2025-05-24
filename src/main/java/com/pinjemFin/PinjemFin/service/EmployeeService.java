@@ -190,7 +190,7 @@ public class EmployeeService {
 
 
 
-    public pengajuan_userEmployee recomendMarketing(String token, UUID pengajuanId) {
+    public pengajuan_userEmployee recomendMarketing(String token, UUID pengajuanId,String note) {
         UUID marketingid = getUserEmployeeIdFromToken(token);
         UsersEmployee marketing = employeeRepository.findById(marketingid)
                 .orElseThrow(() -> new RuntimeException("marketingid not found"));
@@ -209,6 +209,11 @@ public class EmployeeService {
 
         pengajuanRepository.updateStatusById(recomendfromMarketing.getId_pengajuan(),"bckt_BranchManager");
 
+        pengajuan_userEmployee Marketingnote = new pengajuan_userEmployee();
+        Marketingnote.setId_user_employee(marketing);
+        Marketingnote.setId_pengajuan(recomendfromMarketing);
+        Marketingnote.setNote(note);
+        pengajuanEmployeeRepository.save(Marketingnote);
         return pengajuanEmployeeRepository.save(pengajuan_userEmployee);
     }
 

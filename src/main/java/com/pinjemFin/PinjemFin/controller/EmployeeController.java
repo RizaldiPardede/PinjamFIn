@@ -84,7 +84,7 @@ public class EmployeeController {
     public pengajuan_userEmployee recomendMarketing(@RequestHeader("Authorization") String authHeader
             ,@RequestBody PengajuanRequest pengajuanRequest) {
         String token =  authHeader.substring(7);
-        return employeeService.recomendMarketing(token,pengajuanRequest.getId_pengajuan());
+        return employeeService.recomendMarketing(token,pengajuanRequest.getId_pengajuan(),pengajuanRequest.getNote());
     }
 
     @PostMapping("/approveBranchManager")
@@ -169,6 +169,12 @@ public class EmployeeController {
             responseMessage.setMessage(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseMessage);
         }
+    }
+
+
+    @GetMapping("/getNote")
+    public List<NoteResponse> getNote(@RequestBody NoteRequest request) {
+        return pengajuanEmployeeService.getNote(request.getId_pengajuan());
     }
 
 

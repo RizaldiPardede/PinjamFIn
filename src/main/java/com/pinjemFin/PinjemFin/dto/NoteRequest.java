@@ -5,8 +5,6 @@ import lombok.Data;
 import java.util.UUID;
 
 @Data
-public class PengajuanRequest {
-
+public class NoteRequest {
     private UUID id_pengajuan;
-    private String note;
 }
