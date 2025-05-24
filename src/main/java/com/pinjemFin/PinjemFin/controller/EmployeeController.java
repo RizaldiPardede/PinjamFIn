@@ -172,7 +172,7 @@ public class EmployeeController {
     }
 
 
-    @GetMapping("/getNote")
+    @PostMapping("/getNote")
     public List<NoteResponse> getNote(@RequestBody NoteRequest request) {
         return pengajuanEmployeeService.getNote(request.getId_pengajuan());
     }
