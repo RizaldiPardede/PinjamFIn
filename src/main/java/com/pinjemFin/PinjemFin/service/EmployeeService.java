@@ -47,6 +47,9 @@ public class EmployeeService {
     TokenNotifikasiRepository tokenNotifikasiRepository;
 
     @Autowired
+    PinjamanRepository pinjamanRepository;
+
+    @Autowired
     TokenNotifikasiRepository tokenRepository;
 
     private final JwtUtil jwtUtil;
@@ -249,13 +252,38 @@ public class EmployeeService {
         return pengajuanEmployeeRepository.save(pengajuan_userEmployee);
     }
 
-    public Pengajuan disburseBackOffice(UUID pengajuanId) {
+    public Pengajuan disburseBackOffice(String token,UUID pengajuanId,String note) {
         Optional<Pengajuan> pengajuan = pengajuanRepository.findById(pengajuanId);
-        Pengajuan ApprovetoDisburse = pengajuan.get();
+        Pengajuan ApprovetoDisburse = pengajuan.orElseThrow();
         UsersCustomer usersCustomer = ApprovetoDisburse.getId_user_customer();
-        usersCustomer.setSisa_plafon(usersCustomer.getSisa_plafon()-ApprovetoDisburse.getTotal_payment());
-        customerService.saveCustomer(usersCustomer);
         pengajuanRepository.updateStatusById(ApprovetoDisburse.getId_pengajuan(),"Disbursment");
+
+        UUID backofficeid = getUserEmployeeIdFromToken(token);
+        UsersEmployee backoffice = employeeRepository.findById(backofficeid)
+                .orElseThrow(() -> new RuntimeException("branchmanager not found"));
+
+        //karna telah di disburse masuk table pinjaman
+        Pinjaman pinjaman = new Pinjaman();
+        pinjaman.setId_user_customer(ApprovetoDisburse.getId_user_customer());
+        pinjaman.setBunga(ApprovetoDisburse.getBunga());
+        pinjaman.setAngsuran(ApprovetoDisburse.getAngsuran());
+        pinjaman.setTenor(ApprovetoDisburse.getTenor());
+        pinjaman.setJumlah_pinjaman(ApprovetoDisburse.getAmount());
+        pinjaman.setSisa_tenor(ApprovetoDisburse.getTenor());
+        pinjaman.setSisa_pokok_hutang(ApprovetoDisburse.getAmount());
+        pinjaman.setTotal_payment(ApprovetoDisburse.getTotal_payment());
+        pinjamanRepository.save(pinjaman);
+
+        //set notenya
+        pengajuan_userEmployee BackOfficeNote = new pengajuan_userEmployee();
+        BackOfficeNote.setId_user_employee(backoffice);
+        BackOfficeNote.setId_pengajuan(ApprovetoDisburse);
+        BackOfficeNote.setNote(note);
+        BackOfficeNote.setId_pengajuan_userEmployee(pengajuanEmployeeRepository.findByUserEmployeeAndPengajuan(backofficeid,ApprovetoDisburse.getId_pengajuan())
+                .orElseThrow().getId_pengajuan_userEmployee());
+        pengajuanEmployeeRepository.save(BackOfficeNote);
+
+
         List<TokenNotifikasi>  tokenNotifikasis = tokenRepository.findTokensByCustomerId(usersCustomer.getId_user_customer());
         tokenNotifikasiService.sendNotificationToTokens(tokenNotifikasis,"Halo Segera Cek Saldo Anda","Pengajuan Anda Rp."+pengajuan.get().getAmount()+" Telah Di Disburse");
         return ApprovetoDisburse;

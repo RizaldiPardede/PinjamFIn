@@ -95,8 +95,10 @@ public class EmployeeController {
     }
 
     @PostMapping("/disbursement")
-    public Pengajuan disbursement(@RequestBody PengajuanRequest pengajuanRequest) {
-        return employeeService.disburseBackOffice(pengajuanRequest.getId_pengajuan());
+    public Pengajuan disbursement(@RequestHeader("Authorization") String authHeader
+            ,@RequestBody PengajuanRequest pengajuanRequest) {
+        String token = authHeader.substring(7);
+        return employeeService.disburseBackOffice(token,pengajuanRequest.getId_pengajuan(),pengajuanRequest.getNote());
     }
 
     @GetMapping ("/getProfileMarketing")
