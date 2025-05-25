@@ -66,20 +66,40 @@ public class PengajuanEmployeeService {
     }
 
     public List<NoteResponse> getNote(UUID id_pengajuan) {
-        List<pengajuan_userEmployee> pengajuanUserEmployees = pengajuanEmployeeRepository.findByIdPengajuan(id_pengajuan);
+        List<pengajuan_userEmployee> pengajuanUserEmployees = pengajuanEmployeeRepository.findByIdPengajuanOrderByRole(id_pengajuan);
 
         List<NoteResponse> noteResponses = new ArrayList<>();
+        if (pengajuanUserEmployees.get(0).getId_pengajuan().getStatus().equalsIgnoreCase("tolak")) {
+            for (int i = 0; i < pengajuanUserEmployees.size(); i++) {
+                pengajuan_userEmployee pue = pengajuanUserEmployees.get(i);
+                NoteResponse noteResponse = new NoteResponse();
 
-        for (pengajuan_userEmployee pue : pengajuanUserEmployees) {
-            NoteResponse noteResponse = new NoteResponse();
-            noteResponse.setNama(pue.getId_user_employee().getUsers().getNama());
-            noteResponse.setNama_role(pue.getId_user_employee().getUsers().getRole().getNama_role());
+                noteResponse.setNama(pue.getId_user_employee().getUsers().getNama());
+                noteResponse.setNama_role(pue.getId_user_employee().getUsers().getRole().getNama_role());
 
-            noteResponse.setStatus(pue.getId_pengajuan().getStatus());
-            noteResponse.setNote(pue.getNote());
+                if (i == pengajuanUserEmployees.size() - 1) {
+                    noteResponse.setStatus("Reject");
+                } else {
+                    noteResponse.setStatus("Approve");
+                }
 
-            noteResponses.add(noteResponse);
+                noteResponse.setNote(pue.getNote());
+                noteResponses.add(noteResponse);
+            }
         }
+        else{
+            for (pengajuan_userEmployee pue : pengajuanUserEmployees) {
+                NoteResponse noteResponse = new NoteResponse();
+                noteResponse.setNama(pue.getId_user_employee().getUsers().getNama());
+                noteResponse.setNama_role(pue.getId_user_employee().getUsers().getRole().getNama_role());
+
+                noteResponse.setStatus("Approve");
+                noteResponse.setNote(pue.getNote());
+
+                noteResponses.add(noteResponse);
+            }
+        }
+
 
         return noteResponses;
     }
