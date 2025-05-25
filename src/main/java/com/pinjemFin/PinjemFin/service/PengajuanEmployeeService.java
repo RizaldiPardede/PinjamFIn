@@ -73,29 +73,40 @@ public class PengajuanEmployeeService {
             for (int i = 0; i < pengajuanUserEmployees.size(); i++) {
                 pengajuan_userEmployee pue = pengajuanUserEmployees.get(i);
                 NoteResponse noteResponse = new NoteResponse();
-
                 noteResponse.setNama(pue.getId_user_employee().getUsers().getNama());
                 noteResponse.setNama_role(pue.getId_user_employee().getUsers().getRole().getNama_role());
-
                 if (i == pengajuanUserEmployees.size() - 1) {
                     noteResponse.setStatus("Reject");
                 } else {
                     noteResponse.setStatus("Approve");
                 }
-
+                noteResponse.setNote(pue.getNote());
+                noteResponses.add(noteResponse);
+            }
+        }
+        else if(pengajuanUserEmployees.get(0).getId_pengajuan().getStatus().equalsIgnoreCase("Disbursment")){
+            for (int i = 0; i < pengajuanUserEmployees.size(); i++) {
+                pengajuan_userEmployee pue = pengajuanUserEmployees.get(i);
+                NoteResponse noteResponse = new NoteResponse();
+                noteResponse.setNama(pue.getId_user_employee().getUsers().getNama());
+                noteResponse.setNama_role(pue.getId_user_employee().getUsers().getRole().getNama_role());
+                noteResponse.setStatus("Approve");
                 noteResponse.setNote(pue.getNote());
                 noteResponses.add(noteResponse);
             }
         }
         else{
-            for (pengajuan_userEmployee pue : pengajuanUserEmployees) {
+            for (int i = 0; i < pengajuanUserEmployees.size(); i++) {
+                pengajuan_userEmployee pue = pengajuanUserEmployees.get(i);
                 NoteResponse noteResponse = new NoteResponse();
                 noteResponse.setNama(pue.getId_user_employee().getUsers().getNama());
                 noteResponse.setNama_role(pue.getId_user_employee().getUsers().getRole().getNama_role());
-
-                noteResponse.setStatus("Approve");
+                if (i == pengajuanUserEmployees.size() - 1) {
+                    noteResponse.setStatus("In review");
+                } else {
+                    noteResponse.setStatus("Approve");
+                }
                 noteResponse.setNote(pue.getNote());
-
                 noteResponses.add(noteResponse);
             }
         }
