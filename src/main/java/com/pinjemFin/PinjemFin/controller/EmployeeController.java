@@ -100,6 +100,12 @@ public class EmployeeController {
         String token = authHeader.substring(7);
         return employeeService.disburseBackOffice(token,pengajuanRequest.getId_pengajuan(),pengajuanRequest.getNote());
     }
+    @PostMapping("/reject")
+    public Pengajuan reject(@RequestHeader("Authorization") String authHeader
+            ,@RequestBody PengajuanRequest pengajuanRequest) {
+        String token = authHeader.substring(7);
+        return employeeService.reject(token,pengajuanRequest.getId_pengajuan(),pengajuanRequest.getNote());
+    }
 
     @GetMapping ("/getProfileMarketing")
     public UsersEmployee getProfileMarketing(@RequestHeader("Authorization") String authHeader) {

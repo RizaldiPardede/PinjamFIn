@@ -289,6 +289,34 @@ public class EmployeeService {
         return ApprovetoDisburse;
     }
 
+    public Pengajuan reject(String token,UUID pengajuanId,String note) {
+        Optional<Pengajuan> pengajuan = pengajuanRepository.findById(pengajuanId);
+        Pengajuan reject = pengajuan.orElseThrow();
+        UsersCustomer usersCustomer = reject.getId_user_customer();
+        pengajuanRepository.updateStatusById(reject.getId_pengajuan(),"tolak");
+
+        UUID employeeid = getUserEmployeeIdFromToken(token);
+        UsersEmployee employee = employeeRepository.findById(employeeid)
+                .orElseThrow(() -> new RuntimeException("branchmanager not found"));
+
+        //set notenya
+        pengajuan_userEmployee BackOfficeNote = new pengajuan_userEmployee();
+        BackOfficeNote.setId_user_employee(employee);
+        BackOfficeNote.setId_pengajuan(reject);
+        BackOfficeNote.setNote(note);
+        BackOfficeNote.setId_pengajuan_userEmployee(pengajuanEmployeeRepository.findByUserEmployeeAndPengajuan(employeeid,reject.getId_pengajuan())
+                .orElseThrow().getId_pengajuan_userEmployee());
+        pengajuanEmployeeRepository.save(BackOfficeNote);
+
+        //pengembalian sisa plafon
+        usersCustomer.setSisa_plafon(usersCustomer.getSisa_plafon()+reject.getAmount());
+        customerService.saveCustomer(usersCustomer);
+
+        List<TokenNotifikasi>  tokenNotifikasis = tokenRepository.findTokensByCustomerId(usersCustomer.getId_user_customer());
+        tokenNotifikasiService.sendNotificationToTokens(tokenNotifikasis,"Halo Mohon Maaf","Pengajuan Anda Rp."+pengajuan.get().getAmount()+" Ditolak karena alasan kelengkapan data");
+        return reject;
+    }
+
 
 
     public List<UsersCustomer> getallcustomer(){
