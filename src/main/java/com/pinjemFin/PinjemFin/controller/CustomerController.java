@@ -1,22 +1,17 @@
 package com.pinjemFin.PinjemFin.controller;
 
 import com.pinjemFin.PinjemFin.dto.*;
+import com.pinjemFin.PinjemFin.models.UserCustomerImage;
 import com.pinjemFin.PinjemFin.models.Users;
 import com.pinjemFin.PinjemFin.models.UsersCustomer;
-import com.pinjemFin.PinjemFin.service.AuthService;
-import com.pinjemFin.PinjemFin.service.CustomerService;
-import com.pinjemFin.PinjemFin.service.PasswordResetService;
-import com.pinjemFin.PinjemFin.service.PengajuanService;
+import com.pinjemFin.PinjemFin.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/customer")
@@ -35,6 +30,8 @@ public class CustomerController {
     @Autowired
     private AuthService authService;
 
+    @Autowired
+    private UserCustomerImageService userCustomerImageService;
 
     @PostMapping("/CekUpdateAkun")
     public ResponseEntity<ResponseMessage> cekUpdateAkun(@RequestHeader("Authorization") String authHeader) {
@@ -117,6 +114,13 @@ public class CustomerController {
         String token = authHeader.substring(7);
         return ResponseEntity.ok(CustomerService.getUserCustomer(CustomerService.getUserCustomerIdFromToken(token)));
 
+    }
+
+    @PostMapping("/getAllImageCustomer")
+    public List<UserCustomerImage> getAllImageCustomer(@RequestHeader("Authorization") String authHeader) throws Exception {
+        String token = authHeader.substring(7);
+        UUID idCustomer = CustomerService.getUserCustomerIdFromToken(token);
+        return userCustomerImageService.getAllImageCustomer(idCustomer);
     }
 
 
