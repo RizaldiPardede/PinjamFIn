@@ -49,13 +49,6 @@ jobs:
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            source /etc/environment
-            pkill -f 'java' || true
-            cd /home/${{ secrets.VM_USER }}/pinjemFinv2/target
-            setsid nohup java -jar PinjemFin-0.0.1-SNAPSHOT.jar \
-            --spring.datasource.url="$DB_URL" \
-            --spring.datasource.username="$DB_USER" \
-            --spring.datasource.password="$DB_PASSWORD" \
-            --spring.profiles.active=prod > app.log 2>&1 < /dev/null &
+            ./start-app.sh
           
 
