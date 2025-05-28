@@ -22,6 +22,11 @@ jobs:
       - name: Give execute permission to mvnw
         run: chmod +x mvnw
 
+      - name: Create Firebase Admin SDK JSON
+        run: |
+          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > src/main/resources/firebase/praktikumfirebase-62989-firebase-adminsdk-wra94-b1d34801c0.json
+
+
       - name: Build Spring Boot App (Maven)
         run: ./mvnw clean package -DskipTests
 
@@ -45,7 +50,10 @@ jobs:
           script: |
             pkill -f 'java' || true
             cd /home/${{ secrets.VM_USER }}/pinjemFinv2/target
-            setsid nohup java -jar PinjemFin-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod > app.log 2>&1 < /dev/null &
-            disown
+            nohup java -jar PinjemFin-0.0.1-SNAPSHOT.jar \
+            --spring.datasource.url="${DB_URL}" \
+            --spring.datasource.username="${DB_USER}" \
+            --spring.datasource.password="${DB_PASSWORD}" \
+            --spring.profiles.active=prod > app.log 2>&1 &
 
 #        Yooooo Ci/cd loh
