@@ -45,7 +45,7 @@ jobs:
           script: |
             pkill -f 'java' || true
             cd /home/${{ secrets.VM_USER }}/pinjemFinv2/target
-            setsid nohup java -jar app.jar --spring.profiles.active=prod > app.log 2>&1 < /dev/null &
+            setsid nohup java -jar PinjemFin-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod > app.log 2>&1 < /dev/null &
             disown
 
 #        Yooooo Ci/cd loh
