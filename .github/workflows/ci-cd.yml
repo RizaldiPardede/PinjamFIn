@@ -55,10 +55,9 @@ jobs:
             echo "DB_PASSWORD=${DB_PASSWORD}"
             pkill -f 'java' || true
             cd /home/${{ secrets.VM_USER }}/pinjemFinv2/target
-            nohup java -jar PinjemFin-0.0.1-SNAPSHOT.jar \
-            --spring.datasource.url="${DB_URL}" \
-            --spring.datasource.username="${DB_USER}" \
-            --spring.datasource.password="${DB_PASSWORD}" \
-            --spring.profiles.active=prod > app.log 2>&1 & disown
-            echo "Started java with nohup"
+            setsid java -jar PinjemFin-0.0.1-SNAPSHOT.jar \
+            --spring.datasource.url="$DB_URL" \
+            --spring.datasource.username="$DB_USER" \
+            --spring.datasource.password="$DB_PASSWORD" \
+            --spring.profiles.active=prod > app.log 2>&1 < /dev/null &
 #        Yooooo Ci/cd loh
