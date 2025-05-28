@@ -19,10 +19,7 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Give execute permission to mvnw
-        run: chmod +x mvnw
-
       - name: Build Spring Boot App (Maven)
-        run: ./mvnw clean package -DskipTests
+        run: ./mvn clean package -DskipTests
 
 #        Yooooo Ci/cd loh
