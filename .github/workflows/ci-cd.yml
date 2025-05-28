@@ -44,9 +44,9 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           envs: DB_URL,DB_USER,DB_PASS
           script: |
-            export DB_URL="${{ secrets.DB_URL }}"
-            export DB_USER="${{ secrets.DB_USER }}"
-            export DB_PASS="${{ secrets.DB_PASS }}"
+            export DB_URL=${{ secrets.DB_URL }}
+            export DB_USER=${{ secrets.DB_USER }}
+            export DB_PASS=${{ secrets.DB_PASS }}
             
             echo "DB_URL=${DB_URL}
             pkill -f 'java' || true
