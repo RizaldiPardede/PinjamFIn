@@ -36,4 +36,20 @@ jobs:
             target: "/home/${{ secrets.VM_USER }}/pinjemFinv2"
 
 
+      - name: Run Spring Boot on Ubuntu VM with Env Vars
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: DB_URL,DB_USER,DB_PASS
+          script: |
+            export DB_URL=${{ secrets.DB_URL }}
+            export DB_USER=${{ secrets.DB_USER }}
+            export DB_PASS=${{ secrets.DB_PASS }}
+            
+            pkill -f 'java' || true
+            cd /home/${{ secrets.VM_USER }}/pinjemFinv2/target
+            nohup java -jar app.jar --spring.profiles.active=prod >app.log 2>&1 &
+
 #        Yooooo Ci/cd loh
