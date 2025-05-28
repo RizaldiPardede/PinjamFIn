@@ -20,6 +20,6 @@ jobs:
           distribution: 'temurin'
 
       - name: Build Spring Boot App (Maven)
-        run: ./mvn clean package -DskipTests
+        run: .mvn clean package -DskipTests
 
 #        Yooooo Ci/cd loh
