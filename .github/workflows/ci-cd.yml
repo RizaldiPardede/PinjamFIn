@@ -25,4 +25,15 @@ jobs:
       - name: Build Spring Boot App (Maven)
         run: ./mvnw clean package -DskipTests
 
+
+      - name: Copy JAR to GCP VM
+        uses: appleboy/scp-action@v0.1.4
+        with:
+            host: ${{ secrets.VM_HOST }}
+            username: ${{ secrets.VM_USER }}
+            key: ${{ secrets.SSH_PRIVATE_KEY }}
+            source: "target/*.jar"
+            target: "/home/${{ secrets.VM_USERNAME }}/pinjemFinv2
+
+
 #        Yooooo Ci/cd loh
