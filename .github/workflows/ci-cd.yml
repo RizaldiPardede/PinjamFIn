@@ -33,7 +33,7 @@ jobs:
             username: ${{ secrets.VM_USER }}
             key: ${{ secrets.SSH_PRIVATE_KEY }}
             source: "target/*.jar"
-            target: "/home/${{ secrets.VM_USERNAME }}/pinjemFinv2
+            target: "/home/${{ secrets.VM_USERNAME }}/pinjemFinv2"
 
 
 #        Yooooo Ci/cd loh
