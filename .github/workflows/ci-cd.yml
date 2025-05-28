@@ -55,6 +55,6 @@ jobs:
             --spring.datasource.url="${DB_URL}" \
             --spring.datasource.username="${DB_USER}" \
             --spring.datasource.password="${DB_PASSWORD}" \
-            --spring.profiles.active=prod > app.log 2>&1 &
+            --spring.profiles.active=prod > app.log 2>&1 & disown
 
 #        Yooooo Ci/cd loh
