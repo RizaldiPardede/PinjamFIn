@@ -42,16 +42,10 @@ jobs:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          envs: DB_URL,DB_USER,DB_PASS
           script: |
-            export DB_URL=${{ secrets.DB_URL }}
-            export DB_USER=${{ secrets.DB_USER }}
-            export DB_PASS=${{ secrets.DB_PASS }}
-            
-            echo "DB_URL=${DB_URL}
             pkill -f 'java' || true
             cd /home/${{ secrets.VM_USER }}/pinjemFinv2/target
-            nohup java -jar app.jar --spring.profiles.active=prod >app.log 2>&1 &
+            nohup java -jar app.jar --spring.profiles.active=prod > app.log 2>&1 &
             echo $! > app.pid
 
 #        Yooooo Ci/cd loh
