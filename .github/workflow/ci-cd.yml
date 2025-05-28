@@ -1,0 +1,23 @@
+name: Deploy Spring Boot to Ubuntu VM
+
+on:
+  push:
+    branches:
+      - main  # Sesuaikan dengan branch kamu
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Build Spring Boot App (Maven)
+        run: ./mvnw clean package -DskipTests
