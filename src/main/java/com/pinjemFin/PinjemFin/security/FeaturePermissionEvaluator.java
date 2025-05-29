@@ -37,12 +37,14 @@ public class FeaturePermissionEvaluator {
         }
 
         String userId = getSubjectFromToken();
+        System.out.println("ini UUIDnya Has Access : " + userId);
         if (userId == null) {
             System.out.println("Token subject (sub) not found");
             return false;
         }
 
         UUID uuid;
+
         try {
             uuid = UUID.fromString(userId);
         } catch (IllegalArgumentException e) {
