@@ -142,7 +142,22 @@ public class StartupConfig {
                         "feature_createRole",
                         "feature_attachRoleFeature",
                         "feature_getFeaturefromRole",
-                        "feature_getAllRole"
+                        "feature_getAllRole",
+                                //new feature
+                                "feature_getProfileEmployee",
+                                "feature_ubahPassword",
+                                "feature_reject",
+                                "feature_getImageDocPengajuan",
+                                "feature_websocket",
+                                "feature_getBranch",
+                                "feature_deleteBranch",
+                                "feature_getAllFeature",
+                                "feature_getNote",
+                                "feature_getAllCustomer",
+                                "feature_createPlafon",
+                                "feature_updatePlafon",
+                                "feature_deletePlafon",
+                                "feature_editEmployee"
                 );
 
                 // ✅ Simpan fitur jika belum ada
