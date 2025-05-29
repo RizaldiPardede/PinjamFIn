@@ -4,6 +4,7 @@ import com.pinjemFin.PinjemFin.models.Plafon;
 import com.pinjemFin.PinjemFin.service.PlafonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public class PlafonController {
     @Autowired
     PlafonService plafonService;
 
+    @PreAuthorize("@permissionEvaluator.hasAccess(authentication, 'feature_getAllPlafon')")
     @GetMapping("/getAllPlafon")
     public List<Plafon> getAllPlafon() {
         return plafonService.getAllPlafon(); // Menggunakan method custom yang sudah kamu buat

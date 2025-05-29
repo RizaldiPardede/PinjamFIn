@@ -8,6 +8,7 @@ import com.pinjemFin.PinjemFin.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
@@ -68,7 +69,7 @@ public class CustomerController {
         return ResponseEntity.ok(response);
     }
 
-//    @PreAuthorize("@permissionEvaluator.hasAccess(authentication, 'feature_getplafon')")
+
     @GetMapping("/getPlafon")
     public ResponseEntity<UsersCustomer> getplafon(@RequestHeader("Authorization") String authHeader) {
         String token = authHeader.substring(7);
