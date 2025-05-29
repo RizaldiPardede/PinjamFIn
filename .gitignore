@@ -31,5 +31,5 @@ build/
 
 ### VS Code ###
 .vscode/
-#/src/main/resources/application.properties
+/src/main/resources/application.properties
 /src/main/resources/firebase/praktikumfirebase-62989-firebase-adminsdk-wra94-b1d34801c0.json
