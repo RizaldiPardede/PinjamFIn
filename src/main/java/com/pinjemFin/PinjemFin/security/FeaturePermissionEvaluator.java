@@ -4,9 +4,15 @@ import com.pinjemFin.PinjemFin.models.Feature;
 import com.pinjemFin.PinjemFin.models.Users;
 import com.pinjemFin.PinjemFin.repository.RoleFeatureRepository;
 import com.pinjemFin.PinjemFin.repository.UsersRepository;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,7 +22,9 @@ public class FeaturePermissionEvaluator {
 
     private final UsersRepository usersRepository;
     private final RoleFeatureRepository roleFeatureRepository;
+    @Value("${jwt.secret}")
 
+    private String secretKey;
     @Autowired
     public FeaturePermissionEvaluator(UsersRepository userRepository, RoleFeatureRepository roleFeatureRepository) {
         this.usersRepository = userRepository;
@@ -24,16 +32,15 @@ public class FeaturePermissionEvaluator {
     }
 
     public boolean hasAccess(Authentication authentication, String featureName) {
-//        String userId = authentication.getName(); // dapat dari JWT
-//        Users user = usersRepository.findById(UUID.fromString(userId)).orElse(null);
-//        if (user == null || user.getRole() == null) return false;
-//
-//        List<Feature> allowedFeatures = roleFeatureRepository.findFeaturesByRoleId(user.getRole().getId_role());
-//
-//        return allowedFeatures.stream()
-//                .anyMatch(f -> f.getFeature_name().equalsIgnoreCase(featureName));
-        String userId = authentication.getName();
-        System.out.println("Authentication.getName(): " + userId);
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return false;
+        }
+
+        String userId = getSubjectFromToken();
+        if (userId == null) {
+            System.out.println("Token subject (sub) not found");
+            return false;
+        }
 
         UUID uuid;
         try {
@@ -44,12 +51,8 @@ public class FeaturePermissionEvaluator {
         }
 
         Users user = usersRepository.findById(uuid).orElse(null);
-        if (user == null) {
-            System.out.println("User not found for UUID: " + userId);
-            return false;
-        }
-        if (user.getRole() == null) {
-            System.out.println("User role is null for user: " + userId);
+        if (user == null || user.getRole() == null) {
+            System.out.println("User or Role not found for UUID: " + userId);
             return false;
         }
 
@@ -57,5 +60,27 @@ public class FeaturePermissionEvaluator {
 
         return allowedFeatures.stream()
                 .anyMatch(f -> f.getFeature_name().equalsIgnoreCase(featureName));
+    }
+
+    private String getSubjectFromToken() {
+        try {
+            ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+            if (attr == null) return null;
+
+            HttpServletRequest request = attr.getRequest();
+            String authHeader = request.getHeader("Authorization");
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) return null;
+
+            String token = authHeader.replace("Bearer ", "");
+            Claims claims = Jwts.parser()
+                    .setSigningKey(secretKey.getBytes()) // gunakan .getBytes() untuk versi 0.9.1
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            return claims.getSubject(); // ini adalah UUID user dari JWT "sub"
+        } catch (Exception e) {
+            System.out.println("Error parsing JWT: " + e.getMessage());
+            return null;
+        }
     }
 }
