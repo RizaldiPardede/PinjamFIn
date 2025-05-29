@@ -158,7 +158,8 @@ public class StartupConfig {
                                 "feature_updatePlafon",
                                 "feature_deletePlafon",
                                 "feature_editEmployee",
-                                "feature_getAllPlafon"
+                                "feature_getAllPlafon",
+                                "feature_getPengajuanEmployee"
                 );
 //test
                 // ✅ Simpan fitur jika belum ada
