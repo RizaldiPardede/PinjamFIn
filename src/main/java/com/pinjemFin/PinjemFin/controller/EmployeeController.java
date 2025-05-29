@@ -107,7 +107,7 @@ public class EmployeeController {
         return employeeService.reject(token,pengajuanRequest.getId_pengajuan(),pengajuanRequest.getNote());
     }
 
-    @GetMapping ("/getProfileMarketing")
+    @GetMapping ("/getProfileEmployee")
     public UsersEmployee getProfileMarketing(@RequestHeader("Authorization") String authHeader) {
         String token = authHeader.substring(7);
         return employeeService.getEmployeeProfileFromToken(token);
