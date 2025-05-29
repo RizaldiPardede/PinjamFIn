@@ -34,6 +34,7 @@ public class CustomerController {
     @Autowired
     private UserCustomerImageService userCustomerImageService;
 
+    @PreAuthorize("@permissionEvaluator.hasAccess(authentication, 'feature_CekUpdateAkun')")
     @PostMapping("/CekUpdateAkun")
     public ResponseEntity<ResponseMessage> cekUpdateAkun(@RequestHeader("Authorization") String authHeader) {
         String token = authHeader.substring(7);
@@ -41,6 +42,7 @@ public class CustomerController {
 
     }
 
+    @PreAuthorize("@permissionEvaluator.hasAccess(authentication, 'feature_AddDetailAkun')")
     @PostMapping("/AddDetailAkun")
     public ResponseEntity<UsersCustomer> createCustomer(@RequestBody DetailCustomerRequest detailCustomerRequest
             ,@RequestHeader("Authorization") String authHeader) {
@@ -77,6 +79,7 @@ public class CustomerController {
         return ResponseEntity.ok(CustomerService.getPlafon(token));
     }
 
+    @PreAuthorize("@permissionEvaluator.hasAccess(authentication, 'feature_getSimulasi')")
     @PostMapping("/getSimulasi")
     public ResponseEntity<SimulasiPengajuanCustomerRequest> getSimulasi(@RequestBody SimulasiRequest simulasiRequest, @RequestHeader("Authorization") String authHeader) {
         String token = authHeader.substring(7);
@@ -89,6 +92,8 @@ public class CustomerController {
         return ResponseEntity.ok(pengajuanService.getSimulasiPengajuan(simulasiRequest.getAmount(),simulasiRequest.getTenor(),token));
     }
 
+
+    @PreAuthorize("@permissionEvaluator.hasAccess(authentication, 'feature_getInformasiPengajuan')")
     @PostMapping("/getInformasiPengajuan")
     public ResponseEntity<InformasiPengajuanResponse> getInformasiPengajuan(@RequestHeader("Authorization") String authHeader) {
 
@@ -110,6 +115,7 @@ public class CustomerController {
 
     }
 
+    @PreAuthorize("@permissionEvaluator.hasAccess(authentication, 'feature_getProfile')")
     @GetMapping("/getProfile")
     public ResponseEntity<UsersCustomer> getProfile(@RequestHeader("Authorization") String authHeader) {
         String token = authHeader.substring(7);
@@ -117,6 +123,7 @@ public class CustomerController {
 
     }
 
+    @PreAuthorize("@permissionEvaluator.hasAccess(authentication, 'feature_getAllImageCustomer')")
     @PostMapping("/getAllImageCustomer")
     public List<UserCustomerImage> getAllImageCustomer(@RequestHeader("Authorization") String authHeader) throws Exception {
         String token = authHeader.substring(7);

@@ -100,7 +100,7 @@ public class StartupConfig {
                 employee.setBranch(null); // set sesuai kebutuhan kalau pakai branch
                 employeeRepository.save(employee);
 
-                // ✅ Kirim email akun
+                // Kirim email akun
                 String subject = "Akun Super Admin Berhasil Dibuat";
                 String body = "Email: " + email + "\n" +
                         "Password: " + rawPassword + "\n\n" +
@@ -122,7 +122,7 @@ public class StartupConfig {
                 RoleFeatureService roleFeatureService) {
 
             return args -> {
-                // ✅ Semua nama fitur
+                // Semua nama fitur
                 List<String> allFeatures = List.of(
                         "feature_getPengajuanMarketing",
                         "feature_recomendMarketing",
@@ -159,10 +159,26 @@ public class StartupConfig {
                                 "feature_deletePlafon",
                                 "feature_editEmployee",
                                 "feature_getAllPlafon",
-                                "feature_getPengajuanEmployee"
+                                "feature_getPengajuanEmployee",
+
+                                //untuk feature android
+                                "feature_getUser",
+                                "feature_updatePassword",
+                                "feature_getProfile",
+                                "feature_addTokenNotifikasi",
+                                "feature_clearUserCustomerNotifikasi",
+                                "feature_getSimulasi",
+                                "feature_CreatePengajuan",
+                                "feature_CekUpdateAkun",
+                                "feature_getAllPengajuan",
+                                "feature_AddDetailAkun",
+                                "feature_getInformasiPengajuan",
+                                "feature_uploadImage",
+                                "feature_getProfileImage",
+                                "feature_getAllImageCustomer"
                 );
-//test
-                // ✅ Simpan fitur jika belum ada
+
+                //  Simpan fitur jika belum ada
                 List<UUID> featureIds = new ArrayList<>();
                 for (String featureName : allFeatures) {
                     Feature existing = featureRepository.findByFeatureName(featureName);
@@ -178,7 +194,7 @@ public class StartupConfig {
                     }
                 }
 
-                // ✅ Ambil role super admin
+                // Ambil role super admin
                 Role superAdmin = roleRepository.findByNamaRole("super admin");
                 if (superAdmin != null) {
                     // Buat RoleFeatureRequest

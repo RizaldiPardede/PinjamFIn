@@ -9,6 +9,7 @@ import com.pinjemFin.PinjemFin.service.CustomerService;
 import com.pinjemFin.PinjemFin.service.TokenNotifikasiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -21,6 +22,7 @@ public class TokenNotifikasiController {
     @Autowired
     private CustomerService customerService;
 
+    @PreAuthorize("@permissionEvaluator.hasAccess(authentication, 'feature_addTokenNotifikasi')")
     @PostMapping("/addTokenNotifikasi")
     public ResponseEntity<ResponseMessage> addToken(@RequestHeader("Authorization")String autheader
             , @RequestBody TokenNotifikasiRequest tokenNotifikasiRequest) {
@@ -38,6 +40,7 @@ public class TokenNotifikasiController {
         return ResponseEntity.ok(responseMessage);
     }
 
+    @PreAuthorize("@permissionEvaluator.hasAccess(authentication, 'feature_clearUserCustomerNotifikasi')")
     @PostMapping("/clearUserCustomerNotifikasi")
     public ResponseEntity<ResponseMessage> clearCustomerFromToken(@RequestHeader("Authorization")String autheader
             ,@RequestBody TokenNotifikasiRequest tokenNotifikasiRequest) {

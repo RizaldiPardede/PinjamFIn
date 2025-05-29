@@ -31,6 +31,8 @@ public class PengajuanController {
     @Autowired
     UserCustomerImageService userCustomerImageService;
 
+
+    @PreAuthorize("@permissionEvaluator.hasAccess(authentication, 'feature_CreatePengajuan')")
     @PostMapping("/CreatePengajuan")
     public ResponseEntity<?> createPengajuan(@RequestBody PengajuanCustomerRequest pengajuanCustomerRequest,
                                                                   @RequestHeader("Authorization") String authHeader) {
@@ -78,6 +80,7 @@ public class PengajuanController {
         return ResponseEntity.ok(responseMessage);
     }
 
+    @PreAuthorize("@permissionEvaluator.hasAccess(authentication, 'feature_getAllPengajuan')")
     @GetMapping("/getAllPengajuan")
     public List<Pengajuan> getAllPengajuan(@RequestHeader("Authorization")  String authHeader) {
         String token = authHeader.substring(7);

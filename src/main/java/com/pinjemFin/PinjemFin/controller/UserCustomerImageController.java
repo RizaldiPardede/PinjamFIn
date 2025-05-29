@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,6 +19,7 @@ public class UserCustomerImageController {
     @Autowired
     private UserCustomerImageService userCustomerImageService;
 
+    @PreAuthorize("@permissionEvaluator.hasAccess(authentication, 'feature_uploadImage')")
     @PostMapping("/uploadImage")
     public ResponseEntity<Map<String, String>> uploadImage(
             @RequestHeader("Authorization") String authHeader,
@@ -35,6 +37,7 @@ public class UserCustomerImageController {
         }
     }
 
+    @PreAuthorize("@permissionEvaluator.hasAccess(authentication, 'feature_getProfileImage')")
     @PostMapping("/getProfileImage")
     public ResponseEntity<GetProfileResponse> getProfileImage(@RequestHeader("Authorization") String authHeader) throws Exception {
         String token = authHeader.substring(7); // remove "Bearer "

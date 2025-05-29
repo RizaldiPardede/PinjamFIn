@@ -7,6 +7,7 @@ import com.pinjemFin.PinjemFin.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -215,6 +216,7 @@ public class AuthController {
         return ResponseEntity.ok(responseMessage);
     }
 
+    @PreAuthorize("@permissionEvaluator.hasAccess(authentication, 'feature_getUser')")
     @PostMapping("/getUser")
     public ResponseEntity<?> getUser(@RequestHeader("Authorization") String autheader) {
         Users user = authService.getuser(autheader);
@@ -222,6 +224,7 @@ public class AuthController {
 
     }
 
+    @PreAuthorize("@permissionEvaluator.hasAccess(authentication, 'feature_updatePassword')")
     @PostMapping("/updatePassword")
     public ResponseEntity<?> updagePassword(@RequestHeader("Authorization") String autheader
             ,@RequestBody UpdatePasswordUserRequest request) {
