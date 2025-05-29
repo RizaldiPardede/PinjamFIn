@@ -52,6 +52,6 @@ jobs:
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            ./start.sh
+            ./start2.sh
           
 
