@@ -11,6 +11,7 @@ import com.pinjemFin.PinjemFin.service.UserCustomerImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -62,6 +63,7 @@ public class PengajuanController {
         return pengajuanService.getPengajuanById(pengajuanRequest.getId_pengajuan());
     }
 
+    @PreAuthorize("@permissionEvaluator.hasAccess(authentication, 'feature_getImageDocPengajuan')")
     @PostMapping("/getImageDocPengajuan")
     public List<UserCustomerImage> getImageDocPengajuan(@RequestBody GetAllDocumentRequest getAllDocumentRequest) throws Exception {
         return userCustomerImageService.getAllImageCustomer(getAllDocumentRequest.getId_user_customer());

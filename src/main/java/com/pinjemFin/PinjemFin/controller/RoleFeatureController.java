@@ -7,6 +7,7 @@ import com.pinjemFin.PinjemFin.service.RoleFeatureService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +27,7 @@ public class RoleFeatureController {
         return roleFeatureService.createRoleFeature(roleFeature);
     }
 
-
+    @PreAuthorize("@permissionEvaluator.hasAccess(authentication, 'feature_attachRoleFeature')")
     @PostMapping("/attach")
     public ResponseEntity<?> attachFeatureToRole(@RequestBody RoleFeatureRequest request) {
         try {
@@ -46,6 +47,7 @@ public class RoleFeatureController {
         }
     }
 
+    @PreAuthorize("@permissionEvaluator.hasAccess(authentication, 'feature_getFeaturefromRole')")
     @PostMapping("/getallrolefetures")
     public ResponseEntity<List<UUID>> getFeaturesByRole(@RequestBody RoleFeatureRequest request) {
         List<UUID> featureIds = roleFeatureService.getFeatureIdsByRole(request.getId_role());

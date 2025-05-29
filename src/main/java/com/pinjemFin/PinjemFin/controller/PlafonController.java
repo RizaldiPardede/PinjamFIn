@@ -25,11 +25,13 @@ public class PlafonController {
         return plafonService.getAllPlafon(); // Menggunakan method custom yang sudah kamu buat
     }
 
+    @PreAuthorize("@permissionEvaluator.hasAccess(authentication, 'feature_createPlafon')")
     @PostMapping("/createPlafon")
     public Plafon createPlafon(@RequestBody Plafon plafon) {
         return plafonService.createPlafon(plafon);
     }
 
+    @PreAuthorize("@permissionEvaluator.hasAccess(authentication, 'feature_updatePlafon')")
     @PutMapping("/{id}")
     public ResponseEntity<?> updatePlafon(@PathVariable UUID id, @RequestBody Plafon plafon) {
         Plafon updated = plafonService.updatePlafon(id, plafon);
@@ -39,6 +41,7 @@ public class PlafonController {
         ));
     }
 
+    @PreAuthorize("@permissionEvaluator.hasAccess(authentication, 'feature_deletePlafon')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePlafon(@PathVariable UUID id) {
         Plafon deleted = plafonService.deletePlafon(id);

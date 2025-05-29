@@ -4,6 +4,7 @@ import com.pinjemFin.PinjemFin.models.Branch;
 import com.pinjemFin.PinjemFin.service.BranchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +18,7 @@ public class BranchController {
     private BranchService branchService;
 
 
+    @PreAuthorize("@permissionEvaluator.hasAccess(authentication, 'feature_getAllCabang')")
     @GetMapping("/getAllBranch")
     public ResponseEntity<List<Branch>> getAllBranches() {
         List<Branch> branches = branchService.getAllBranches();
@@ -24,6 +26,7 @@ public class BranchController {
     }
 
 
+    @PreAuthorize("@permissionEvaluator.hasAccess(authentication, 'feature_getBranch')")
     @PostMapping("/getBranch")
     public ResponseEntity<?> getBranchById(@RequestBody Map<String, String> payload) {
         String idStr = payload.get("id_branch");
@@ -43,6 +46,7 @@ public class BranchController {
     }
 
 
+    @PreAuthorize("@permissionEvaluator.hasAccess(authentication, 'feature_createCabang')")
     @PostMapping("/addBranch")
     public ResponseEntity<Branch> addBranch(@RequestBody Branch branch) {
         Branch savedBranch = branchService.saveBranch(branch);
@@ -50,6 +54,7 @@ public class BranchController {
     }
 
 
+    @PreAuthorize("@permissionEvaluator.hasAccess(authentication, 'feature_updateCabang')")
     @PatchMapping("updateBranch/{id}")
     public ResponseEntity<Branch> updatePartialBranch(
             @PathVariable UUID id,
