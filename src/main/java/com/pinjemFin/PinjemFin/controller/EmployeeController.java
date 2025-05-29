@@ -144,8 +144,10 @@ public class EmployeeController {
 
     @PutMapping("/updateProfile")
     public ResponseEntity<?> updateProfile(@RequestBody UpdateProfileEmployeeRequest request) {
+        System.out.println("Received update profile request: " + request);
         try {
             UsersEmployee updated = employeeService.updateProfileEmployee(request);
+
             return ResponseEntity.ok(updated);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
