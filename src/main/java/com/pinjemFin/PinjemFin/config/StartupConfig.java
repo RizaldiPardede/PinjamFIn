@@ -160,7 +160,7 @@ public class StartupConfig {
                                 "feature_editEmployee",
                                 "feature_getAllPlafon"
                 );
-
+//test
                 // ✅ Simpan fitur jika belum ada
                 List<UUID> featureIds = new ArrayList<>();
                 for (String featureName : allFeatures) {
