@@ -17,7 +17,8 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:4200")  // URL Angular frontend
+                .allowedOrigins("http://localhost:4200")
+                .allowedOrigins("https://pinjem-fin-v1.vercel.app")// URL Angular frontend
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH")
                 .allowedHeaders("*")
                 .allowCredentials(true);  // Pastikan ini ada jika menggunakan credentials (misal: token)
