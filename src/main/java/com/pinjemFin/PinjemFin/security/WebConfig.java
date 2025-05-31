@@ -17,8 +17,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:4200")
-                .allowedOrigins("https://pinjem-fin-v1.vercel.app")// URL Angular frontend
+                .allowedOrigins("http://localhost:4200","https://pinjem-fin-v1.vercel.app")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH")
                 .allowedHeaders("*")
                 .allowCredentials(true);  // Pastikan ini ada jika menggunakan credentials (misal: token)
@@ -27,8 +26,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Bean
     public static CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:4200"));
-        configuration.setAllowedOrigins(List.of("https://pinjem-fin-v1.vercel.app"));// Frontend origin
+        configuration.setAllowedOrigins(List.of("http://localhost:4200","https://pinjem-fin-v1.vercel.app"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "*"));
         configuration.setAllowCredentials(true);  // Mengizinkan credential seperti cookies atau token
