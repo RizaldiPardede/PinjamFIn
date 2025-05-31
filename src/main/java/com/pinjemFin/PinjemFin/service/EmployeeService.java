@@ -252,7 +252,7 @@ public class EmployeeService {
         return pengajuanEmployeeRepository.save(pengajuan_userEmployee);
     }
 
-    public Pengajuan disburseBackOffice(String token,UUID pengajuanId,String note) {
+    public pengajuan_userEmployee disburseBackOffice(String token,UUID pengajuanId,String note) {
         Optional<Pengajuan> pengajuan = pengajuanRepository.findById(pengajuanId);
         Pengajuan ApprovetoDisburse = pengajuan.orElseThrow();
         UsersCustomer usersCustomer = ApprovetoDisburse.getId_user_customer();
@@ -286,7 +286,7 @@ public class EmployeeService {
 
         List<TokenNotifikasi>  tokenNotifikasis = tokenRepository.findTokensByCustomerId(usersCustomer.getId_user_customer());
         tokenNotifikasiService.sendNotificationToTokens(tokenNotifikasis,"Halo Segera Cek Saldo Anda","Pengajuan Anda Rp."+pengajuan.get().getAmount()+" Telah Di Disburse");
-        return ApprovetoDisburse;
+        return BackOfficeNote;
     }
 
     public Pengajuan reject(String token,UUID pengajuanId,String note) {

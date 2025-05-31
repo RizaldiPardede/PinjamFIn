@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.UUID;
@@ -93,7 +94,14 @@ public class EmployeeController {
     public pengajuan_userEmployee recomendMarketing(@RequestHeader("Authorization") String authHeader
             ,@RequestBody PengajuanRequest pengajuanRequest) {
         String token =  authHeader.substring(7);
-        return employeeService.recomendMarketing(token,pengajuanRequest.getId_pengajuan(),pengajuanRequest.getNote());
+        pengajuan_userEmployee pengajuanUserEmployee=  employeeService.recomendMarketing(token,pengajuanRequest.getId_pengajuan(),pengajuanRequest.getNote());
+        if (!pengajuanUserEmployee.getId_user_employee().getId_user_employee().equals(employeeService.getEmployeeProfileFromToken(token).getId_user_employee())) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "Anda tidak memiliki akses untuk pengajuan ini"
+            );
+        }
+        return pengajuanUserEmployee;
     }
 
     @PreAuthorize("@permissionEvaluator.hasAccess(authentication, 'feature_approveBM')")
@@ -101,15 +109,29 @@ public class EmployeeController {
     public pengajuan_userEmployee approveBranchManager(@RequestHeader("Authorization") String authHeader
             ,@RequestBody PengajuanRequest pengajuanRequest) {
         String token = authHeader.substring(7);
-        return employeeService.approveBranchManager(token,pengajuanRequest.getId_pengajuan(),pengajuanRequest.getNote());
+        pengajuan_userEmployee pengajuanUserEmployee = employeeService.approveBranchManager(token,pengajuanRequest.getId_pengajuan(),pengajuanRequest.getNote());
+        if (!pengajuanUserEmployee.getId_user_employee().getId_user_employee().equals(employeeService.getEmployeeProfileFromToken(token).getId_user_employee())) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "Anda tidak memiliki akses untuk pengajuan ini"
+            );
+        }
+        return pengajuanUserEmployee;
     }
 
     @PreAuthorize("@permissionEvaluator.hasAccess(authentication, 'feature_disburse')")
     @PostMapping("/disbursement")
-    public Pengajuan disbursement(@RequestHeader("Authorization") String authHeader
+    public pengajuan_userEmployee disbursement(@RequestHeader("Authorization") String authHeader
             ,@RequestBody PengajuanRequest pengajuanRequest) {
         String token = authHeader.substring(7);
-        return employeeService.disburseBackOffice(token,pengajuanRequest.getId_pengajuan(),pengajuanRequest.getNote());
+        pengajuan_userEmployee pengajuanUserEmployee = employeeService.disburseBackOffice(token,pengajuanRequest.getId_pengajuan(),pengajuanRequest.getNote());
+        if (!pengajuanUserEmployee.getId_user_employee().getId_user_employee().equals(employeeService.getEmployeeProfileFromToken(token).getId_user_employee())) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,
+                    "Anda tidak memiliki akses untuk pengajuan ini"
+            );
+        }
+        return pengajuanUserEmployee;
     }
 
     @PreAuthorize("@permissionEvaluator.hasAccess(authentication, 'feature_reject')")
