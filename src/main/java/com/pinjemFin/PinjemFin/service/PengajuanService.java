@@ -106,7 +106,7 @@ public class PengajuanService {
             if(amount>plafon.getJumlah_plafon()){
                 throw new ResponseStatusException(
                         HttpStatus.BAD_REQUEST,
-                        "Maximal Pinjaman Plafon Anda Sekarang ${plafon.getJumlah_plafon()}"
+                        "Maximal Pinjaman Plafon Anda Sekarang Rp "+plafon.getJumlah_plafon()
                 );
             }
             return simulasiPengajuanCustomerRequest;
@@ -125,7 +125,7 @@ public class PengajuanService {
             if(amount>plafon.getJumlah_plafon()){
                 throw new ResponseStatusException(
                         HttpStatus.BAD_REQUEST,
-                        "Maximal Pinjaman Plafon Anda Sekarang ${plafon.getJumlah_plafon()}"
+                        "Maximal Pinjaman Plafon Anda Sekarang Rp "+plafon.getJumlah_plafon()
                 );
             }
 
