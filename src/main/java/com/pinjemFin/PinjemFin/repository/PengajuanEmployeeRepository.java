@@ -83,4 +83,15 @@ public interface PengajuanEmployeeRepository extends JpaRepository<pengajuan_use
             "  WHEN 'back office' THEN 3 " +
             "  ELSE 4 END")
     List<pengajuan_userEmployee> findByIdPengajuanOrderByRole(@Param("idPengajuan") UUID id_pengajuan);
+
+    @Query("SELECT pue FROM pengajuan_userEmployee pue " +
+            "JOIN pue.id_user_employee.users.role r " +
+            "WHERE pue.id_pengajuan.id_pengajuan = :idPengajuan " +
+            "AND r.nama_role =:role")
+    Optional<pengajuan_userEmployee> findByIdPengajuanRole(@Param("idPengajuan") UUID id_pengajuan,@Param("role") String role);
+
+//            "  WHEN 'marketing' THEN 1 "
+//            "  WHEN 'branch manager' THEN 2 "
+//            "  WHEN 'back office' THEN 3 "
+//            "  ELSE 4 END"
 }

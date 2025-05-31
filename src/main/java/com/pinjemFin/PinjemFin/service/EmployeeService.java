@@ -5,9 +5,11 @@ import com.pinjemFin.PinjemFin.models.*;
 import com.pinjemFin.PinjemFin.repository.*;
 import com.pinjemFin.PinjemFin.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -195,6 +197,14 @@ public class EmployeeService {
 
     public pengajuan_userEmployee recomendMarketing(String token, UUID pengajuanId,String note) {
         UUID marketingid = getUserEmployeeIdFromToken(token);
+        //pengecekan apakah employee memang memiliki pengajuan ini
+        if (!marketingid.equals(pengajuanEmployeeRepository.findByIdPengajuanRole(
+                pengajuanId,"marketing").get().getId_user_employee().getId_user_employee())) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,  // 403 Forbidden karena akses ditolak
+                    "Anda tidak memiliki akses untuk pengajuan ini"
+            );
+        }
         UsersEmployee marketing = employeeRepository.findById(marketingid)
                 .orElseThrow(() -> new RuntimeException("marketingid not found"));
         UsersEmployee branchmarketing = employeeRepository.findBranchManager(marketing.getBranch().getId_branch()
@@ -224,6 +234,14 @@ public class EmployeeService {
 
     public pengajuan_userEmployee approveBranchManager(String token, UUID pengajuanId,String note) {
         UUID branchmanagerid = getUserEmployeeIdFromToken(token);
+        //pengecekan apakah employee memang memiliki pengajuan ini
+        if (!branchmanagerid.equals(pengajuanEmployeeRepository.findByIdPengajuanRole(
+                pengajuanId,"branch manager").get().getId_user_employee().getId_user_employee())) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,  // 403 Forbidden karena akses ditolak
+                    "Anda tidak memiliki akses untuk pengajuan ini"
+            );
+        }
         UsersEmployee branchmanager = employeeRepository.findById(branchmanagerid)
                 .orElseThrow(() -> new RuntimeException("branchmanager not found"));
         UsersEmployee backoffice = employeeRepository.findBackOffice(branchmanager.getBranch().getId_branch()
@@ -253,14 +271,24 @@ public class EmployeeService {
     }
 
     public pengajuan_userEmployee disburseBackOffice(String token,UUID pengajuanId,String note) {
+        UUID backofficeid = getUserEmployeeIdFromToken(token);
+        UsersEmployee backoffice = employeeRepository.findById(backofficeid)
+                .orElseThrow(() -> new RuntimeException("branchmanager not found"));
+
+        //pengecekan apakah employee memang memiliki pengajuan ini
+        if (!backofficeid.equals(pengajuanEmployeeRepository.findByIdPengajuanRole(
+                pengajuanId,"back office").get().getId_user_employee().getId_user_employee())) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN,  // 403 Forbidden karena akses ditolak
+                    "Anda tidak memiliki akses untuk pengajuan ini"
+            );
+        }
         Optional<Pengajuan> pengajuan = pengajuanRepository.findById(pengajuanId);
         Pengajuan ApprovetoDisburse = pengajuan.orElseThrow();
         UsersCustomer usersCustomer = ApprovetoDisburse.getId_user_customer();
         pengajuanRepository.updateStatusById(ApprovetoDisburse.getId_pengajuan(),"Disbursment");
 
-        UUID backofficeid = getUserEmployeeIdFromToken(token);
-        UsersEmployee backoffice = employeeRepository.findById(backofficeid)
-                .orElseThrow(() -> new RuntimeException("branchmanager not found"));
+
 
         //karna telah di disburse masuk table pinjaman
         Pinjaman pinjaman = new Pinjaman();
@@ -290,14 +318,45 @@ public class EmployeeService {
     }
 
     public Pengajuan reject(String token,UUID pengajuanId,String note) {
+        UUID employeeid = getUserEmployeeIdFromToken(token);
+        UsersEmployee employee = employeeRepository.findById(employeeid)
+                .orElseThrow(() -> new RuntimeException("Employee not found"));
+
+        //pengecekan double
+        switch (employee.getUsers().getRole().getNama_role()) {
+            case "marketing":
+                if (!employeeid.equals(pengajuanEmployeeRepository.findByIdPengajuanRole(
+                    pengajuanId,"marketing").get().getId_user_employee().getId_user_employee())) {
+                throw new ResponseStatusException(
+                        HttpStatus.FORBIDDEN,  // 403 Forbidden karena akses ditolak
+                        "Anda tidak memiliki akses untuk pengajuan ini"
+                );
+            }
+            case "branch manager":
+                if (!employeeid.equals(pengajuanEmployeeRepository.findByIdPengajuanRole(
+                        pengajuanId,"branch manager").get().getId_user_employee().getId_user_employee())) {
+                    throw new ResponseStatusException(
+                            HttpStatus.FORBIDDEN,  // 403 Forbidden karena akses ditolak
+                            "Anda tidak memiliki akses untuk pengajuan ini"
+                    );
+                }
+
+            case "back office":
+                if (!employeeid.equals(pengajuanEmployeeRepository.findByIdPengajuanRole(
+                        pengajuanId,"back office").get().getId_user_employee().getId_user_employee())) {
+                    throw new ResponseStatusException(
+                            HttpStatus.FORBIDDEN,  // 403 Forbidden karena akses ditolak
+                            "Anda tidak memiliki akses untuk pengajuan ini"
+                    );
+                }
+        }
+
         Optional<Pengajuan> pengajuan = pengajuanRepository.findById(pengajuanId);
         Pengajuan reject = pengajuan.orElseThrow();
         UsersCustomer usersCustomer = reject.getId_user_customer();
         pengajuanRepository.updateStatusById(reject.getId_pengajuan(),"tolak");
 
-        UUID employeeid = getUserEmployeeIdFromToken(token);
-        UsersEmployee employee = employeeRepository.findById(employeeid)
-                .orElseThrow(() -> new RuntimeException("branchmanager not found"));
+
 
         //set notenya
         pengajuan_userEmployee BackOfficeNote = new pengajuan_userEmployee();
