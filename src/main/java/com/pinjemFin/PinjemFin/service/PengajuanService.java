@@ -92,8 +92,8 @@ public class PengajuanService {
     }
 
     public SimulasiPengajuanCustomerRequest getSimulasiPengajuan(Double amount, int tenor, String token) {
-
-        if (token == null || token.isEmpty()) {
+        UUID cekusercustomer = customerService.getUserCustomerIdFromToken(token);
+        if (token == null || token.isEmpty()|| cekusercustomer == null) {
             SimulasiPengajuanCustomerRequest simulasiPengajuanCustomerRequest = new SimulasiPengajuanCustomerRequest();
             Plafon plafon = plafonRepository.findPlafonByJenis_plafon("Bronze").get();
 

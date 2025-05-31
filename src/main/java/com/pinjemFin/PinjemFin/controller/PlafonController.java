@@ -19,7 +19,6 @@ public class PlafonController {
     @Autowired
     PlafonService plafonService;
 
-//    @PreAuthorize("@permissionEvaluator.hasAccess(authentication, 'feature_getAllPlafon')")
     @GetMapping("/getAllPlafon")
     public List<Plafon> getAllPlafon() {
         return plafonService.getAllPlafon(); // Menggunakan method custom yang sudah kamu buat
