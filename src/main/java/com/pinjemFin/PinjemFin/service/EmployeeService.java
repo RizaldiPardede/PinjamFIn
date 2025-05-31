@@ -332,6 +332,7 @@ public class EmployeeService {
                         "Anda tidak memiliki akses untuk pengajuan ini"
                 );
             }
+                break;
             case "branch manager":
                 if (!employeeid.equals(pengajuanEmployeeRepository.findByIdPengajuanRole(
                         pengajuanId,"branch manager").get().getId_user_employee().getId_user_employee())) {
@@ -340,6 +341,7 @@ public class EmployeeService {
                             "Anda tidak memiliki akses untuk pengajuan ini"
                     );
                 }
+                break;
 
             case "back office":
                 if (!employeeid.equals(pengajuanEmployeeRepository.findByIdPengajuanRole(
@@ -349,6 +351,7 @@ public class EmployeeService {
                             "Anda tidak memiliki akses untuk pengajuan ini"
                     );
                 }
+                break;
         }
 
         Optional<Pengajuan> pengajuan = pengajuanRepository.findById(pengajuanId);
