@@ -96,6 +96,8 @@ public class EmployeeController {
         String token =  authHeader.substring(7);
         pengajuan_userEmployee pengajuanUserEmployee=  employeeService.recomendMarketing(token,pengajuanRequest.getId_pengajuan(),pengajuanRequest.getNote());
         if (!pengajuanUserEmployee.getId_user_employee().getId_user_employee().equals(employeeService.getEmployeeProfileFromToken(token).getId_user_employee())) {
+            System.out.println("pengajuanUserEmployee: "+pengajuanUserEmployee.getId_user_employee().getId_user_employee());
+            System.out.println("getEmployeeProfileFromToken: "+ employeeService.getEmployeeProfileFromToken(token).getId_user_employee());
             throw new ResponseStatusException(
                     HttpStatus.FORBIDDEN,
                     "Anda tidak memiliki akses untuk pengajuan ini"
