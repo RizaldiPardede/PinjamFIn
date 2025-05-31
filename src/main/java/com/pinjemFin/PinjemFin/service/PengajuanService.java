@@ -7,8 +7,11 @@ import com.pinjemFin.PinjemFin.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import org.springframework.web.server.ResponseStatusException;
 
 
 import java.util.List;
@@ -100,6 +103,12 @@ public class PengajuanService {
             Double totalPengajuan = amount+(amount*(plafon.getBunga()/100));
             simulasiPengajuanCustomerRequest.setTotal_payment(totalPengajuan);
             simulasiPengajuanCustomerRequest.setAngsuran(totalPengajuan/tenor);
+            if(amount>plafon.getJumlah_plafon()){
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "Maximal Pinjaman Plafon Anda Sekarang ${plafon.getJumlah_plafon()}"
+                );
+            }
             return simulasiPengajuanCustomerRequest;
         }else {
             SimulasiPengajuanCustomerRequest simulasiPengajuanCustomerRequest = new SimulasiPengajuanCustomerRequest();
@@ -112,6 +121,14 @@ public class PengajuanService {
             Double totalPengajuan = amount+(amount*(plafon.getBunga()/100));
             simulasiPengajuanCustomerRequest.setTotal_payment(totalPengajuan);
             simulasiPengajuanCustomerRequest.setAngsuran(totalPengajuan/tenor);
+
+            if(amount>plafon.getJumlah_plafon()){
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "Maximal Pinjaman Plafon Anda Sekarang ${plafon.getJumlah_plafon()}"
+                );
+            }
+
             return simulasiPengajuanCustomerRequest;
 
         }
