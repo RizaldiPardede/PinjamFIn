@@ -51,7 +51,7 @@ public class PasswordResetService {
         }
         passwordResetTokenRepository.save(resetToken);
 
-        String resetLink = "http://35.202.72.129/resetpassword/" + token;
+        String resetLink = "http://pinjem-fin-v1.vercel.app/resetpassword/" + token;
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(users.getEmail());
